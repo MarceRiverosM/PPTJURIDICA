@@ -1,0 +1,1009 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modelo de Gestión y Red Financiera - Davivienda</title>
+    
+    <!-- Tailwind CSS para el diseño -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- React y ReactDOM -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    
+    <!-- Babel para traducir JSX a JavaScript -->
+    <script crossorigin src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    
+    <!-- Fuente Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        html { scroll-behavior: smooth; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in { animation: fadeIn 0.5s ease-in-out; }
+        @keyframes slideRight {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(300%); }
+        }
+        .selection\:bg-red-100 *::selection { background-color: #fee2e2; color: #E01E26; }
+        
+        /* Ajustes específicos para Guardar como PDF o Imprimir */
+        @media print {
+            * {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+            .print-avoid-break {
+                page-break-inside: avoid;
+                break-inside: avoid;
+            }
+            @page { margin: 1cm; }
+        }
+    </style>
+</head>
+<body class="text-gray-800 bg-[#F9FAFB] min-h-screen selection:bg-red-100 selection:text-[#E01E26]">
+    
+    <!-- Contenedor Principal -->
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState } = React;
+
+        // --- SVGs Icons Components ---
+        const IconMenu = () => <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>;
+        const IconX = () => <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>;
+        const IconBuilding = () => <svg className="w-12 h-12 lg:w-16 lg:h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>;
+        const IconUsers = () => <svg className="w-12 h-12 lg:w-16 lg:h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>;
+        const IconKey = () => <svg className="w-12 h-12 lg:w-16 lg:h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"></path></svg>;
+        const IconShield = () => <svg className="w-12 h-12 lg:w-16 lg:h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>;
+        const IconTrending = () => <svg className="w-12 h-12 lg:w-16 lg:h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>;
+        const IconCog = () => <svg className="w-12 h-12 lg:w-16 lg:h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>;
+
+        // --- COMPONENTE: Fondo Global Difuminado ---
+        const BackgroundWatermark = () => (
+          <div className="fixed inset-0 z-[-1] pointer-events-none overflow-hidden bg-[#F9FAFB] print:hidden">
+            <div className="absolute top-[-20%] right-[-10%] w-[80vw] h-[80vw] rounded-[100%] border-[1px] border-[#E01E26]/20 shadow-[0_0_80px_rgba(224,30,38,0.03)] transform rotate-12"></div>
+            <div className="absolute top-[-10%] right-[-20%] w-[90vw] h-[90vw] rounded-[100%] border-[3px] border-[#E01E26]/10 shadow-[inset_0_0_100px_rgba(224,30,38,0.04)] transform rotate-45"></div>
+            <div className="absolute bottom-[-30%] left-[-10%] w-[70vw] h-[70vw] rounded-[100%] border-[2px] border-gray-200 shadow-[0_0_120px_rgba(0,0,0,0.02)]"></div>
+
+            <div className="absolute inset-0 flex items-center justify-center opacity-10 mix-blend-multiply">
+                <img 
+                  src="fondo_agua.png" 
+                  alt="Marca de agua Davivienda" 
+                  className="w-[70vw] max-w-[800px] object-contain"
+                  onError={(e) => { 
+                      e.target.style.display = 'none'; 
+                      document.getElementById('fallback-logo').style.display = 'block';
+                  }}
+                />
+                <div id="fallback-logo" className="hidden text-gray-800">
+                   <svg className="w-[50vw] max-w-[500px] h-auto" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                   </svg>
+                </div>
+            </div>
+          </div>
+        );
+
+        // --- Navigation Menu Component ---
+        const Navbar = ({ toggleMenu, isMenuOpen }) => (
+          <nav className="fixed print:absolute print:shadow-none w-full z-50 bg-white/95 backdrop-blur-md border-b border-gray-100 shadow-sm print:bg-white">
+            <div className="max-w-[1600px] w-[95%] mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="flex justify-between items-center h-24 lg:h-28">
+                
+                {/* Logo representation - Actualizado con imagen */}
+                <div className="flex-shrink-0 flex items-center gap-3">
+                  <img 
+                    src="titulo_final.png" 
+                    alt="Davivienda" 
+                    className="h-12 md:h-14 lg:h-16 w-auto object-contain" 
+                    onError={(e) => { e.target.onerror = null; e.target.src = 'https://via.placeholder.com/200x60/FFFFFF/E01E26?text=Davivienda'; }} 
+                  />
+                </div>
+                
+                {/* Menú Desktop (Oculto en celulares, visible en pantallas grandes) */}
+                <div className="hidden lg:flex items-center space-x-8 xl:space-x-12 print:hidden">
+                    <a href="#relacion-vinculados" className="text-base lg:text-lg xl:text-xl font-semibold text-gray-600 hover:text-[#E01E26] transition-colors">Vinculados</a>
+                    <a href="#uso-red" className="text-base lg:text-lg xl:text-xl font-semibold text-gray-600 hover:text-[#E01E26] transition-colors">Uso de Red</a>
+                    <a href="#economias-escala" className="text-base lg:text-lg xl:text-xl font-semibold text-gray-600 hover:text-[#E01E26] transition-colors">Escala</a>
+                    <a href="#arquitectura" className="text-base lg:text-lg xl:text-xl font-semibold text-gray-600 hover:text-[#E01E26] transition-colors">Arquitectura</a>
+                    <a href="#optimizacion" className="text-base lg:text-lg xl:text-xl font-semibold text-gray-600 hover:text-[#E01E26] transition-colors">Optimización</a>
+                    <a href="#reto-interactivo" className="text-base lg:text-lg xl:text-xl font-bold text-[#E01E26] hover:text-red-800 transition-colors">Reto</a>
+                </div>
+
+                <div className="flex lg:hidden items-center">
+                  <button onClick={toggleMenu} className="text-[#1F2937] hover:text-[#E01E26] focus:outline-none transition-colors print:hidden">
+                    {isMenuOpen ? <IconX /> : <IconMenu />}
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* Mobile Menu Overlay */}
+            {isMenuOpen && (
+              <div className="absolute top-24 left-0 w-full h-screen bg-white shadow-2xl animate-fade-in flex flex-col pt-8 px-8 gap-8 text-2xl font-semibold text-gray-700 print:hidden lg:hidden">
+                <a href="#relacion-vinculados" onClick={toggleMenu} className="hover:text-[#E01E26] border-b border-gray-100 pb-4 transition-colors">1. Relación entre Vinculados</a>
+                <a href="#uso-red" onClick={toggleMenu} className="hover:text-[#E01E26] border-b border-gray-100 pb-4 transition-colors">2. Contrato de Uso de Red</a>
+                <a href="#economias-escala" onClick={toggleMenu} className="hover:text-[#E01E26] border-b border-gray-100 pb-4 transition-colors">3. Economías de Escala</a>
+                <a href="#arquitectura" onClick={toggleMenu} className="hover:text-[#E01E26] border-b border-gray-100 pb-4 transition-colors">4. Reto: Arquitectura y Talento</a>
+                <a href="#optimizacion" onClick={toggleMenu} className="hover:text-[#E01E26] border-b border-gray-100 pb-4 transition-colors">5. Optimización Clientes y Producto</a>
+                <a href="#reto-interactivo" onClick={toggleMenu} className="hover:text-[#E01E26] pb-4 transition-colors text-[#E01E26]">6. Reto de Conocimiento</a>
+              </div>
+            )}
+          </nav>
+        );
+
+        // --- Sections Components ---
+        const Hero = () => (
+          <section className="relative pt-40 pb-32 lg:pt-56 lg:pb-48 overflow-hidden bg-white text-[#1F2937] bg-transparent">
+            <div className="absolute top-0 right-0 -mr-20 -mt-20 w-[800px] h-[800px] bg-[#E01E26] opacity-5 rounded-full blur-3xl pointer-events-none"></div>
+            <div className="absolute bottom-0 left-0 -ml-20 -mb-20 w-[600px] h-[600px] bg-[#E01E26] opacity-5 rounded-full blur-2xl pointer-events-none"></div>
+            
+            <div className="relative max-w-[1600px] w-[95%] mx-auto px-4 sm:px-6 lg:px-8 text-center z-10 print-avoid-break">
+              <h1 className="text-6xl md:text-8xl lg:text-9xl font-extrabold tracking-tight mb-8 text-[#1F2937]">
+                Proyecto Somos <span className="text-[#E01E26]">Uno</span>
+              </h1>
+              <p className="mt-8 text-2xl md:text-3xl lg:text-4xl text-gray-600 max-w-5xl lg:max-w-6xl mx-auto font-light leading-relaxed">
+                Una visión integral desde el Contrato de Uso de Red hasta la optimización transversal para brindar la mejor experiencia a nuestros clientes.
+              </p>
+              <div className="mt-16 print:hidden">
+                <a href="#relacion-vinculados" className="inline-block bg-[#E01E26] text-white font-bold text-xl lg:text-2xl py-6 px-14 rounded-full hover:bg-red-700 transition shadow-[0_8px_20px_rgba(224,30,38,0.3)] hover:shadow-[0_12px_25px_rgba(224,30,38,0.4)] transform hover:-translate-y-1">
+                  Explorar el Modelo
+                </a>
+              </div>
+            </div>
+          </section>
+        );
+
+        const RelacionVinculados = () => {
+          const pillars = [
+            { num: "(i)", title: "Modelo de Relación", desc: "La relación se da de dos maneras fundamentales: mediante el Contrato de Uso de Red y economías de escala.", icon: <IconBuilding /> },
+            { num: "(ii)", title: "Oferta Integral de Productos", desc: "Buscamos tener una oferta de productos completa y transversal para satisfacer a todos nuestros clientes.", icon: <IconShield /> },
+            { num: "(iii)", title: "Comerciales Unificados", desc: "Implica que los equipos comerciales de todas las compañías hermanas pueden distribuir los productos de todo el grupo.", icon: <IconUsers /> },
+            { num: "(iv)", title: "Vinculación Única", desc: "Ofrecemos un solo interlocutor dependiendo del segmento del cliente, simplificando radicalmente la comunicación.", icon: <IconKey /> },
+            { num: "(v)", title: "Eficiencias Intercompany", desc: "Generamos sinergias profundas que nos permiten optimizar gastos, unificar procesos y estandarizar procedimientos.", icon: <IconCog /> },
+            { num: "(vi)", title: "Un Solo Davivienda", desc: "El cliente es tratado de la mejor manera, con la rapidez de los procesos del grupo y un contacto fácil, eficaz y eficiente.", icon: <IconTrending /> }
+          ];
+
+          return (
+            <section id="relacion-vinculados" className="py-32 bg-white/40 backdrop-blur-sm border-y border-red-50">
+              <div className="max-w-[1600px] w-[95%] mx-auto px-4 sm:px-6 lg:px-8">
+                <div className="mb-20 text-center print-avoid-break">
+                  <h2 className="text-4xl md:text-6xl lg:text-7xl font-extrabold text-[#1F2937] mb-6">Relación entre Vinculados</h2>
+                  <p className="text-2xl lg:text-3xl text-gray-600 max-w-5xl mx-auto leading-relaxed">Propósito estratégico y beneficios de nuestra sinergia corporativa.</p>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 lg:gap-12">
+                  {pillars.map((pillar, idx) => (
+                    <div key={idx} className="bg-white p-10 lg:p-12 rounded-3xl shadow-sm border border-gray-100 hover:border-red-100 relative overflow-hidden group hover:shadow-xl transition-all duration-300 print-avoid-break">
+                      <div className="absolute top-0 right-0 p-6 opacity-5 text-[#E01E26] transform group-hover:scale-125 transition duration-500">
+                        {pillar.icon}
+                      </div>
+                      <div className="text-[#E01E26] font-bold text-2xl mb-4">{pillar.num}</div>
+                      <h4 className="text-2xl lg:text-3xl font-bold mb-6 text-[#1F2937] relative z-10">{pillar.title}</h4>
+                      <p className="text-gray-600 text-lg lg:text-xl relative z-10 leading-relaxed">{pillar.desc}</p>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="mt-20 flex flex-col sm:flex-row justify-center gap-8 print:hidden">
+                  <a href="#uso-red" className="inline-flex items-center justify-center bg-white border-2 border-[#E01E26] text-[#E01E26] text-xl font-bold py-5 px-10 rounded-full hover:bg-red-50 transition shadow-sm hover:shadow-md transform hover:-translate-y-1">
+                    Ver Uso de Red &rarr;
+                  </a>
+                  <a href="#economias-escala" className="inline-flex items-center justify-center bg-[#E01E26] text-white text-xl font-bold py-5 px-10 rounded-full hover:bg-red-700 transition shadow-[0_8px_20px_rgba(224,30,38,0.3)] hover:shadow-[0_12px_25px_rgba(224,30,38,0.4)] transform hover:-translate-y-1">
+                    Ver Economías de Escala &rarr;
+                  </a>
+                </div>
+              </div>
+            </section>
+          );
+        };
+
+        const UsoDeRed = () => (
+          <section id="uso-red" className="py-32 bg-transparent">
+            <div className="max-w-[1600px] w-[95%] mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="text-center mb-20 print-avoid-break">
+                <span className="text-[#E01E26] font-bold uppercase tracking-wider text-base lg:text-lg bg-red-50/80 backdrop-blur-sm px-6 py-2 rounded-full inline-block mb-6">Dec. 2555 de 2010 (Art. 2.34.1.1.1)</span>
+                <h2 className="text-4xl md:text-6xl lg:text-7xl font-extrabold text-[#1F2937] mb-8">¿Qué es el Contrato de Uso de Red?</h2>
+                
+                <div className="max-w-6xl mx-auto bg-white rounded-3xl shadow-lg border border-gray-100 overflow-hidden group hover:shadow-xl transition-all duration-500 cursor-default print-avoid-break mt-12">
+                  <div className="p-8 md:p-14 lg:p-20 flex flex-col md:flex-row items-center justify-between gap-10 relative">
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-red-50/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                    
+                    <div className="relative z-10 flex flex-col items-center text-center transform group-hover:scale-105 transition duration-300">
+                      <div className="w-24 h-24 lg:w-32 lg:h-32 bg-[#1F2937] rounded-3xl flex items-center justify-center text-white mb-6 shadow-md">
+                        <IconBuilding />
+                      </div>
+                      <span className="font-bold text-[#1F2937] text-2xl lg:text-3xl mb-2">Entidad Prestataria</span>
+                      <span className="text-sm lg:text-base text-gray-500 uppercase font-bold tracking-widest">"La Red"</span>
+                    </div>
+
+                    <div className="relative z-10 flex-1 flex flex-col items-center justify-center min-w-[300px] w-full py-8 md:py-0">
+                      <div className="text-[#E01E26] font-bold text-lg lg:text-xl mb-6 flex items-center gap-3">
+                        <span className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-100 text-2xl">💰</span>
+                        Acuerdo
+                      </div>
+                      
+                      <div className="w-full flex items-center justify-center relative h-10">
+                        <div className="absolute inset-0 flex items-center justify-between px-4 opacity-30">
+                           {[...Array(12)].map((_, i) => <div key={i} className="w-2 h-2 rounded-full bg-gray-300"></div>)}
+                        </div>
+                        <div className="h-2 w-full bg-gray-100 rounded-full overflow-hidden relative">
+                          <div className="absolute top-0 bottom-0 left-0 w-1/3 bg-gradient-to-r from-transparent via-[#E01E26] to-transparent animate-[slideRight_2s_linear_infinite] group-hover:animate-[slideRight_1s_linear_infinite]"></div>
+                        </div>
+                      </div>
+                      
+                      <div className="text-gray-500 text-sm lg:text-base mt-6 uppercase tracking-widest font-semibold flex items-center gap-3">
+                        Infraestructura Compartida
+                        <span className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-100 text-2xl">🚀</span>
+                      </div>
+                    </div>
+
+                    <div className="relative z-10 flex flex-col items-center text-center transform group-hover:scale-105 transition duration-300">
+                      <div className="w-24 h-24 lg:w-32 lg:h-32 bg-white border-[6px] border-[#E01E26] rounded-3xl flex items-center justify-center text-[#E01E26] mb-6 shadow-md">
+                        <IconUsers />
+                      </div>
+                      <span className="font-bold text-[#1F2937] text-2xl lg:text-3xl mb-2">Entidad Usuaria</span>
+                      <span className="text-sm lg:text-base text-[#E01E26] uppercase font-bold tracking-widest">Ofrece Productos</span>
+                    </div>
+                  </div>
+                  
+                  <div className="bg-gray-50 p-10 lg:p-14 text-center border-t border-gray-100 relative z-10">
+                    <p className="text-xl md:text-2xl lg:text-3xl text-gray-700 leading-relaxed max-w-5xl mx-auto">
+                      Un <strong className="text-[#1F2937]">contrato </strong> entre dos entidades financieras donde una ("La Prestataria") permite que otra ("La Usuaria") <strong className="text-[#E01E26]">ofrezca sus productos o servicios </strong> a través de su red de distribución e infraestructura operativa.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-12 mt-20">
+                <div className="bg-white rounded-3xl p-10 border border-gray-100 shadow-sm hover:shadow-md transition print-avoid-break">
+                  <div className="text-[#E01E26] mb-6"><IconBuilding /></div>
+                  <h3 className="text-2xl lg:text-3xl font-bold mb-4 text-[#1F2937]">La Red</h3>
+                  <p className="text-gray-600 text-lg leading-relaxed">Oficinas, canales físicos, cajeros, aplicaciones digitales y personal informático compartido.</p>
+                </div>
+                <div className="bg-white rounded-3xl p-10 border border-gray-100 shadow-sm hover:shadow-md transition print-avoid-break">
+                  <div className="text-[#E01E26] mb-6"><IconUsers /></div>
+                  <h3 className="text-2xl lg:text-3xl font-bold mb-4 text-[#1F2937]">Productos Ofrecidos</h3>
+                  <ul className="text-gray-600 text-lg space-y-3 list-disc pl-6 marker:text-[#E01E26]">
+                    <li>Fondos de Inversión (FICs)</li>
+                    <li>Fondos de Pensiones</li>
+                    <li>Toma de órdenes de valores</li>
+		    		<li>Otras listadas en la norma</li> 
+                  </ul>
+                </div>
+                {/* Cuadro 3: Reglas Clave (Actualizado a formato de viñetas) */}
+				<div className="bg-white rounded-3xl p-10 border border-gray-100 shadow-sm hover:shadow-md transition print-avoid-break">
+  				<div className="text-[#E01E26] mb-6"><IconShield /></div>
+  				<h3 className="text-2xl lg:text-3xl font-bold mb-4 text-[#1F2937]">Reglas Clave</h3>
+ 				 <ul className="text-gray-600 text-lg space-y-3 list-disc pl-6 marker:text-[#E01E26]">
+  				  <li>No objeción de la SFC</li>
+  				  <li>Identificación clara ante el cliente</li>
+				  <li>Capacitación obligatoria</li>
+  				  <li>Listado de entidades autorizadas</li>
+				  </ul>
+				</div>
+                <div className="bg-[#E01E26] rounded-3xl p-10 shadow-lg hover:shadow-xl transition text-white print-avoid-break">
+                  <div className="text-white mb-6 opacity-90"><IconTrending /></div>
+                  <h3 className="text-2xl lg:text-3xl font-bold mb-4">El Beneficio</h3>
+                  <p className="text-red-100 text-lg leading-relaxed">Más acceso a servicios en un solo lugar, transparencia, seguridad y trabajo en equipo inter-entidades.</p>
+                </div>
+              </div>
+
+              <div className="mt-20 text-center print:hidden">
+                <a href="#relacion-vinculados" className="inline-flex items-center justify-center border-2 border-gray-200 text-gray-500 text-xl font-bold py-5 px-10 rounded-full hover:border-[#E01E26] hover:text-[#E01E26] hover:bg-red-50 transition shadow-sm transform hover:-translate-y-1">
+                  &larr; Volver a Relación entre Vinculados
+                </a>
+              </div>
+            </div>
+          </section>
+        );
+
+        const EconomiasEscala = () => {
+          const [activeReq, setActiveReq] = useState(null);
+
+          const requisitos = [
+            { id: 1, title: "1. Límites en Actividades", desc: "No se podrán compartir actividades propias del core del negocio, evitando así la \"delegación de profesionalidad\"." },
+            { id: 2, title: "2. Retención de Responsabilidad", desc: "La entidad mantiene su responsabilidad legal; únicamente entrega la ejecución de la labor sin trasladar el deber misional." },
+            { id: 3, title: "3. Políticas de Remuneración", desc: "No es admisible bajo ninguna circunstancia que una entidad subsidie los costos de operación de otra del mismo grupo." },
+            { id: 4, title: "4. Aprobación de la Junta", desc: "El contrato debe constar por escrito y ser aprobado, monitoreado y mejorado directamente por la Junta Directiva. Sin perjuicio de las reglas adicionales que existen como conflictos de interés, criterios de materialidad y demás." },
+            { id: 5, title: "5. Gestión de Riesgos", desc: "Se exige un estricto sistema de control, análisis del impacto en el perfil de riesgos intragrupo y planes de contingencia." },
+            { id: 6, title: "6. Resolución de Controversias", desc: "Deben establecerse líneas claras para identificar fácilmente a la entidad responsable ante cualquier eventualidad." },
+            { id: 7, title: "7. Confidencialidad Absoluta", desc: "Es mandatorio adoptar medidas estrictas para garantizar la protección de la información de la entidad y, fundamentalmente, la de todos sus clientes." }
+          ];
+
+          return (
+            <section id="economias-escala" className="py-32 bg-white/40 backdrop-blur-sm border-t border-red-50 relative overflow-hidden">
+              <div className="max-w-[1600px] w-[95%] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                
+                <div className="text-center mb-20 print-avoid-break">
+                  <h2 className="text-4xl md:text-6xl lg:text-7xl font-extrabold text-[#1F2937] mb-6">Economías de Escala</h2>
+                  <p className="text-2xl lg:text-3xl text-gray-600 max-w-5xl mx-auto leading-relaxed">Sinergia y Especialización: Transformación de fuerzas en Corredores y acuerdos de colaboración con la Fiduciaria para optimizar la atención.</p>
+                </div>
+
+                <div className="mb-32 print-avoid-break">
+                  <div className="bg-white border border-gray-100 rounded-[2rem] p-10 md:p-16 lg:p-20 shadow-xl relative overflow-hidden">
+                    <div className="absolute top-0 left-0 w-3 h-full bg-[#E01E26]"></div>
+                    
+                    <div className="mb-16 flex justify-center w-full">
+                      <video 
+                        className="w-full max-w-6xl h-auto rounded-3xl shadow-sm border border-gray-100 object-cover"
+                        controls
+                        preload="metadata"
+                        poster="https://via.placeholder.com/1200x600/F9FAFB/1F2937?text=Video+Economías+de+Escala+(Haz+clic+para+reproducir)"
+                      >
+                        <source src="video_economias_escala.mp4" type="video/mp4" />
+                        Tu navegador no soporta la reproducción de videos.
+                      </video>
+                    </div>
+
+                    <div>
+                      <h4 className="text-lg lg:text-xl font-bold text-[#E01E26] mb-8 uppercase tracking-widest text-center md:text-left">Requisitos y Condiciones </h4>
+                      
+                      {activeReq === null ? (
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                          {requisitos.map((req) => (
+                            <button 
+                              key={req.id} 
+                              onClick={() => setActiveReq(req)}
+                              className="bg-gray-50 p-6 lg:p-8 rounded-2xl border border-gray-200 hover:border-[#E01E26] hover:shadow-md transition-all duration-300 text-left flex items-center gap-4 group cursor-pointer"
+                            >
+                              <span className="text-[#E01E26] text-3xl font-bold group-hover:scale-125 transition-transform duration-300">•</span>
+                              <h5 className="font-bold text-[#1F2937] text-xl">{req.title}</h5>
+                            </button>
+                          ))}
+                        </div>
+                      ) : (
+                        <div className="bg-gray-50 p-8 lg:p-12 rounded-3xl border border-gray-200 shadow-inner animate-fade-in relative print-avoid-break">
+                          <button 
+                            onClick={() => setActiveReq(null)}
+                            className="absolute top-6 right-6 lg:top-8 lg:right-8 text-gray-400 hover:text-[#E01E26] transition-colors focus:outline-none print:hidden"
+                            title="Cerrar"
+                          >
+                            <svg className="w-8 h-8 lg:w-10 lg:h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                          </button>
+                          
+                          <div className="flex items-center justify-center gap-4 mb-6 lg:mb-8 border-b border-gray-200 pb-6 px-4 md:px-12 text-center">
+                            <span className="text-[#E01E26] text-4xl lg:text-5xl font-bold">•</span>
+                            <h5 className="font-extrabold text-[#1F2937] text-3xl lg:text-4xl leading-tight">{activeReq.title}</h5>
+                          </div>
+                          
+                          <p className="text-gray-700 text-2xl lg:text-3xl leading-relaxed max-w-5xl mx-auto text-center">
+                            {activeReq.desc}
+                          </p>
+                          
+                          <div className="mt-10 lg:mt-12 text-center print:hidden">
+                            <button 
+                              onClick={() => setActiveReq(null)}
+                              className="inline-flex items-center justify-center bg-white border-2 border-gray-300 text-gray-600 font-bold text-lg py-4 px-8 rounded-full hover:border-[#E01E26] hover:text-[#E01E26] hover:bg-red-50 transition shadow-sm transform hover:-translate-y-1"
+                            >
+                              &larr; Volver al listado
+                            </button>
+                          </div>
+                        </div>
+                      )}
+
+                    </div>
+                  </div>
+                </div>
+		{/* --- NUEVA SECCIÓN: CONTRATOS ACTUALMENTE SUSCRITOS --- */}
+                <div className="pt-20 border-t border-gray-200 print-avoid-break mb-24">
+                  <div className="text-center mb-12">
+                    <h3 className="text-3xl md:text-4xl font-extrabold text-[#1F2937] mb-4">Contratos Actualmente Suscritos</h3>
+                    <p className="text-xl text-gray-600 font-medium">Mapa de acuerdos vigentes entre las entidades del grupo.</p>
+                  </div>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    {/* Contrato 1: Corredores */}
+                    <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 hover:border-[#E01E26] hover:shadow-md transition-all duration-300 relative overflow-hidden group">
+                      <div className="absolute top-0 right-0 p-4 opacity-5 text-[#E01E26] transform group-hover:scale-125 transition duration-500">
+                        <IconBuilding />
+                      </div>
+                      <div className="flex items-start gap-4 mb-6 border-b border-gray-100 pb-5">
+                         <div className="bg-red-50 text-[#E01E26] p-2 rounded-xl flex-shrink-0"><IconBuilding /></div>
+                         <h4 className="font-bold text-[#1F2937] text-xl leading-tight">La Red:<br/><span className="text-[#E01E26]">Corredores Davivienda</span></h4>
+                      </div>
+                      <p className="text-xs text-gray-500 uppercase tracking-widest font-bold mb-3">Entidades Usuarias:</p>
+                      <ul className="space-y-3 text-gray-700 font-medium">
+                        <li className="flex items-center gap-2"><span className="text-[#E01E26] text-xl">✓</span> Fiduciaria Davivienda</li>
+                        <li className="flex items-center gap-2"><span className="text-[#E01E26] text-xl">✓</span> Banco Davivienda</li>
+                      </ul>
+                      <p className="text-xs text-gray-400 mt-6 italic border-t border-gray-50 pt-4">* Acuerdos independientes con cada usuario.</p>
+                    </div>
+
+                    {/* Contrato 2: Banco */}
+                    <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 hover:border-[#E01E26] hover:shadow-md transition-all duration-300 relative overflow-hidden group">
+                      <div className="absolute top-0 right-0 p-4 opacity-5 text-[#E01E26] transform group-hover:scale-125 transition duration-500">
+                        <IconBuilding />
+                      </div>
+                      <div className="flex items-start gap-4 mb-6 border-b border-gray-100 pb-5">
+                         <div className="bg-red-50 text-[#E01E26] p-2 rounded-xl flex-shrink-0"><IconBuilding /></div>
+                         <h4 className="font-bold text-[#1F2937] text-xl leading-tight">La Red:<br/><span className="text-[#E01E26]">Banco Davivienda</span></h4>
+                      </div>
+                      <p className="text-xs text-gray-500 uppercase tracking-widest font-bold mb-3">Entidades Usuarias:</p>
+                      <ul className="space-y-3 text-gray-700 font-medium">
+                        <li className="flex items-center gap-2"><span className="text-[#E01E26] text-xl">✓</span> Fiduciaria Davivienda</li>
+                        <li className="flex items-center gap-2"><span className="text-[#E01E26] text-xl">✓</span> Corredores Davivienda</li>
+                      </ul>
+                      <p className="text-xs text-gray-400 mt-6 italic border-t border-gray-50 pt-4">* Acuerdos independientes con cada usuario.</p>
+                    </div>
+
+                    {/* Contrato 3: Colaboración Operativa */}
+                    <div className="bg-[#1F2937] p-8 rounded-3xl shadow-lg border border-gray-800 text-white hover:border-[#E01E26] transition-all duration-300 relative overflow-hidden group">
+                      <div className="absolute top-0 right-0 p-4 opacity-5 text-white transform group-hover:scale-125 transition duration-500">
+                        <IconCog />
+                      </div>
+                      <div className="flex items-start gap-4 mb-6 border-b border-gray-700 pb-5">
+                         <div className="bg-gray-800 text-[#E01E26] p-2 rounded-xl flex-shrink-0"><IconCog /></div>
+                         <h4 className="font-bold text-white text-xl leading-tight">Acuerdo de<br/><span className="text-red-300">Colaboración Operativa</span></h4>
+                      </div>
+                      <p className="text-xs text-gray-400 uppercase tracking-widest font-bold mb-3">Partes Involucradas:</p>
+                      <ul className="space-y-3 text-gray-200 font-medium">
+                        <li className="flex items-center gap-2"><span className="text-[#E01E26] text-xl">⇄</span> Fiduciaria Davivienda</li>
+                        <li className="flex items-center gap-2"><span className="text-[#E01E26] text-xl">⇄</span> Banco Davivienda</li>
+                      </ul>
+                      <p className="text-xs text-gray-400 mt-6 italic border-t border-gray-700 pt-4">Sinergia para optimización de procesos y recursos operativos.</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="text-center mb-16 print-avoid-break">
+                  <div className="inline-block px-6 py-2 rounded-full bg-red-50 text-[#E01E26] font-bold uppercase tracking-widest text-base mb-6 border border-red-100">Escenario 1</div>
+                  <h3 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-[#1F2937] mb-4">Corredores Davivienda</h3>
+                  <p className="text-2xl lg:text-3xl text-gray-600 font-medium">Transformación y Especialización de Fuerzas Comerciales</p>
+                </div>
+
+                <div className="flex flex-col lg:flex-row items-center justify-between gap-12 mb-32 print-avoid-break">
+                  <div className="flex-1 bg-white p-12 rounded-3xl border border-gray-100 shadow-lg w-full">
+                    <h3 className="text-3xl font-bold mb-8 text-[#E01E26] border-b border-gray-100 pb-6">La Transformación</h3>
+                    <ul className="space-y-8">
+                      <li className="flex items-start gap-6">
+                        <div className="mt-1 bg-red-50 text-[#E01E26] p-4 rounded-xl"><IconUsers /></div>
+                        <div>
+                          <h4 className="font-bold text-[#1F2937] text-xl lg:text-2xl mb-2">Especialización por Segmento</h4>
+                          <p className="text-gray-600 text-lg leading-relaxed">Fuerzas comerciales divididas estratégicamente según el tipo de cliente.</p>
+                        </div>
+                      </li>
+                      <li className="flex items-start gap-6">
+                        <div className="mt-1 bg-red-50 text-[#E01E26] p-4 rounded-xl"><IconBuilding /></div>
+                        <div>
+                          <h4 className="font-bold text-[#1F2937] text-xl lg:text-2xl mb-2">Foco en Corredores</h4>
+                          <p className="text-gray-600 text-lg leading-relaxed">Corredores se especializa exclusivamente en Banca Privada.</p>
+                        </div>
+                      </li>
+                      <li className="flex items-start gap-6">
+                        <div className="mt-1 bg-red-50 text-[#E01E26] p-4 rounded-xl"><IconTrending /></div>
+                        <div>
+                          <h4 className="font-bold text-[#1F2937] text-xl lg:text-2xl mb-2">Migración Corporativa</h4>
+                          <p className="text-gray-600 text-lg leading-relaxed">Las fuerzas corporativas se movieron a la tesorería de Banco Davivienda.</p>
+                        </div>
+                      </li>
+                    </ul>
+                  </div>
+
+                  <div className="flex flex-col items-center justify-center py-12 lg:py-0 px-8">
+                    <div className="w-32 h-32 lg:w-40 lg:h-40 bg-[#E01E26] rounded-full flex items-center justify-center shadow-[0_8px_30px_rgba(224,30,38,0.4)] text-white">
+                      <IconKey />
+                    </div>
+                    <h3 className="mt-6 font-bold text-2xl lg:text-3xl text-[#1F2937] text-center leading-tight">La Llave<br/>Perfecta</h3>
+                    <p className="text-gray-500 text-base lg:text-lg mt-4 text-center font-medium bg-white px-5 py-2 rounded-full shadow-sm border border-gray-100">Bajo dirección VPEMF</p>
+                  </div>
+
+                  <div className="flex-1 bg-white p-12 rounded-3xl border border-gray-100 shadow-lg w-full">
+                    <h3 className="text-3xl font-bold mb-8 text-[#E01E26] border-b border-gray-100 pb-6">El Resultado</h3>
+                    <p className="text-gray-600 text-lg lg:text-xl leading-relaxed mb-10">
+                      Integra al actual comercial Corporativo, Empresarial y Pyme (cara visible) con un apoyo especializado en operaciones de valores por la nueva fuerza de Banco Davivienda.
+                    </p>
+                    <div className="grid grid-cols-2 gap-6">
+                      <div className="bg-gray-50 p-6 rounded-2xl text-center border border-gray-100">
+                        <span className="block font-bold text-[#E01E26] text-3xl mb-2">✓</span>
+                        <span className="text-sm lg:text-base text-gray-600 uppercase tracking-widest font-bold">Alinea Esfuerzos</span>
+                      </div>
+                      <div className="bg-gray-50 p-6 rounded-2xl text-center border border-gray-100">
+                        <span className="block font-bold text-[#E01E26] text-3xl mb-2">✓</span>
+                        <span className="text-sm lg:text-base text-gray-600 uppercase tracking-widest font-bold">Evita Competencia</span>
+                      </div>
+                      <div className="bg-gray-50 p-6 rounded-2xl text-center border border-gray-100">
+                        <span className="block font-bold text-[#E01E26] text-3xl mb-2">✓</span>
+                        <span className="text-sm lg:text-base text-gray-600 uppercase tracking-widest font-bold">Mejora Canales</span>
+                      </div>
+                      <div className="bg-gray-50 p-6 rounded-2xl text-center border border-gray-100">
+                        <span className="block font-bold text-[#E01E26] text-3xl mb-2">✓</span>
+                        <span className="text-sm lg:text-base text-gray-600 uppercase tracking-widest font-bold">Op. Mayores</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="pt-24 border-t border-gray-200 print-avoid-break">
+                  <div className="text-center mb-16">
+                    <div className="inline-block px-6 py-2 rounded-full bg-red-50 text-[#E01E26] font-bold uppercase tracking-widest text-base mb-6 border border-red-100">Escenario 2</div>
+                  </div>
+
+                  <div className="mb-16 flex justify-center w-full px-4">
+                    <div className="relative inline-block w-full max-w-6xl">
+                      <img 
+                        src="flujo-fiduciaria2.png" 
+                        alt="Contrato de Colaboración Banco y Fiduciaria" 
+                        className="w-full h-auto rounded-3xl shadow-lg border border-gray-100 object-contain"
+                        onError={(e) => { e.target.onerror = null; e.target.src = 'https://via.placeholder.com/1200x500/F9FAFB/1F2937?text=Aseg%C3%BArate+de+enlazar+tu+imagen+flujo-fiduciaria.png+aqui'; }}
+                      />
+                      
+                      {/* Globo interactivo flotante (Tooltip) */}
+                      <div className="absolute bottom-4 right-4 md:bottom-10 md:right-6 z-20 group print:hidden">
+                        
+                        {/* Tarjeta de información oculta que aparece al hacer hover */}
+                        <div className="absolute bottom-full right-0 mb-2 w-48 md:w-56 lg:w-64 bg-white rounded-2xl shadow-2xl border border-gray-100 p-6 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform translate-y-4 group-hover:translate-y-0 pointer-events-none">
+                          <div className="flex items-start gap-2">
+                            <div className="bg-red-50 text-[#E01E26] p-1.5 rounded-xl flex-shrink-0 relative">
+                              <svg className="w-5 h-5 lg:w-6 lg:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+                              <span className="absolute top-[55%] left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-[5px] lg:text-[16px] font-extrabold tracking-wider">SFC</span>
+                            </div>
+                            <div>
+                              <h4 className="font-bold text-[#1F2937] text-lg lg:text-xl leading-tight mb-1">Modelo Tipo Aprobado por la SFC</h4>
+                              <p className="text-gray-600 text-[10px] lg:text-base leading-relaxed">Uso de estructuras contractuales estándar que cumplen con la normativa de la Superintendencia Financiera para una contratación ágil.</p>
+                            </div>
+                          </div>
+                        </div>
+                        
+                        {/* Botón de Información con efecto de pulso */}
+                        <button className="flex items-center justify-center w-14 h-14 lg:w-16 lg:h-16 bg-white/90 backdrop-blur-sm border-2 border-[#E01E26] text-[#E01E26] rounded-full shadow-lg hover:bg-[#E01E26] hover:text-white transition-colors duration-300 relative cursor-help">
+                          <span className="absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-30 animate-ping"></span>
+                          <svg className="w-8 h-8 lg:w-10 lg:h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        </button>
+                        
+                      </div>
+
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mt-24 text-center print:hidden">
+                  <a href="#relacion-vinculados" className="inline-flex items-center justify-center border-2 border-gray-300 text-gray-500 text-xl font-bold py-5 px-10 rounded-full hover:border-[#E01E26] hover:text-[#E01E26] hover:bg-red-50 transition shadow-sm transform hover:-translate-y-1">
+                    &larr; Volver a Relación entre Vinculados
+                  </a>
+                </div>
+
+              </div>
+            </section>
+          );
+        };
+
+        const ArquitecturaTalento = () => {
+          const itemsReto1 = [
+            { title: "Murallas Chinas", desc: "Análisis exhaustivo para asegurar un proceso adecuado y eficaz, cumpliendo la norma para vender los productos." },
+            { title: "Respeto a Normativas", desc: "Cumplimiento estricto en protección de datos, calidad de la prestación del servicio y límites operativos del uso de red." },
+            { title: "Reorganización de Mesas", desc: "Las mesas de gestión de Corredores y Fiduciaria se unificaron a través de directrices comunes (un mismo jefe en Banco), con unificación de Comités de inversión y portafolios" },
+            { title: "Sinergia: Vehículos Delegados", desc: "Unificación de las directrices de administración de productos, negocios y producto que administran en Corredores y Fiduciaria." }
+          ];
+
+          const itemsReto2 = [
+            { title: "Límites de Responsabilidad", desc: "Demarcar claramente dónde termina la gestión comercial de la red del Banco y dónde empieza la responsabilidad legal de la Fiduciaria ante el cliente." },
+            { title: "Deber Fiduciario Indelegable", desc: "Garantizar que la toma de decisiones estratégicas, la administración de portafolios y la gestión de riesgos se mantengan exclusivamente en la Fiduciaria." },
+            { title: "Organización Operativa", desc: "Reorganizar las tareas para aprovechar las eficiencias del Banco sin comprometer los procesos misionales que la Fiduciaria debe ejecutar directamente." },
+            { title: "Gobernanza y Acuerdos", desc: "Formalizar las fronteras de actuación mediante Acuerdos de Nivel de Sinergia (ANS)." }
+          ];
+
+          return (
+            <section id="arquitectura" className="py-32 bg-transparent">
+              <div className="max-w-[1600px] w-[95%] mx-auto px-4 sm:px-6 lg:px-8">
+                
+                <div className="text-center mb-20 border-b border-gray-100 pb-16 print-avoid-break">
+                  <div className="inline-block px-6 py-2 rounded-full bg-red-50 text-[#E01E26] font-bold uppercase tracking-widest text-base mb-6 border border-red-100">Retos Compartidos</div>
+                  <h2 className="text-4xl md:text-6xl lg:text-7xl font-extrabold text-[#1F2937] mt-4 mb-8">Retos de la Transformación</h2>
+                  <p className="text-2xl lg:text-3xl text-gray-600 max-w-5xl mx-auto leading-relaxed">
+                    La especialización y unificación de las fuerzas comerciales trajo consigo desafíos estratégicos y operativos. Para consolidar este nuevo modelo de atención, fue necesario abordar frentes críticos de integración.
+                  </p>
+                </div>
+
+                <div className="flex flex-col lg:flex-row gap-20 items-center mb-32 print-avoid-break">
+                  <div className="flex-1">
+                    <div className="inline-block bg-[#E01E26] text-white font-bold px-5 py-2 rounded-full text-base mb-6 uppercase tracking-widest shadow-sm">Reto 1</div>
+                    <h3 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-[#1F2937] mb-8">Arquitectura y Talento Humano</h3>
+                    <p className="text-xl lg:text-2xl text-gray-600 mb-10 leading-relaxed">
+                      Integrar culturas y procesos requiere cambios físicos y estructurales. La optimización del espacio es clave para la innovación.
+                    </p>
+                    
+                    <div className="space-y-8">
+                      {itemsReto1.map((item, idx) => (
+                        <div key={`r1-${idx}`} className="flex gap-6 items-start group print-avoid-break">
+                          <div className="w-12 h-12 rounded-full bg-red-50 border border-red-100 text-[#E01E26] font-bold text-xl flex items-center justify-center flex-shrink-0 group-hover:bg-[#E01E26] group-hover:text-white transition-colors duration-300">
+                            {idx + 1}
+                          </div>
+                          <div>
+                            <h4 className="text-2xl lg:text-3xl font-bold text-[#1F2937] mb-2">{item.title}</h4>
+                            <p className="text-gray-600 text-lg lg:text-xl leading-relaxed">{item.desc}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="flex-1 w-full">
+                    <div className="relative rounded-[2rem] overflow-hidden shadow-2xl group border border-gray-100 bg-white">
+                      <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" alt="Edificio corporativo moderno" className="w-full h-auto object-cover transform group-hover:scale-105 transition duration-700" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-[#1F2937] via-[#1F2937]/60 to-transparent opacity-90"></div>
+                      <div className="absolute bottom-0 left-0 p-10 md:p-14">
+                        <div className="bg-[#E01E26] text-white text-sm font-bold px-4 py-2 rounded uppercase tracking-widest inline-block mb-4 shadow-md">Hito Físico</div>
+                        <h3 className="text-4xl lg:text-5xl font-bold text-white mb-4">Edificio Los Venados</h3>
+                        <p className="text-gray-200 text-lg lg:text-xl leading-relaxed max-w-2xl">
+                          Optimizamos este edificio para que todos los comerciales estuvieran cerca, fomentando sinergias de ideas y mercado en un solo lugar.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="text-center mb-20 border-b border-gray-100 pb-16 pt-16 print-avoid-break">
+                  <div className="inline-block px-6 py-2 rounded-full bg-red-50 text-[#E01E26] font-bold uppercase tracking-widest text-base mb-6 border border-red-100">Retos Compartidos</div>
+                  <h2 className="text-4xl md:text-6xl lg:text-7xl font-extrabold text-[#1F2937] mt-4 mb-8">Retos de la Colaboración</h2>
+                  <p className="text-2xl lg:text-3xl text-gray-600 max-w-5xl mx-auto leading-relaxed">
+                    Al apalancarse en la red del Banco, fue imperativo estructurar el modelo para proteger la naturaleza del negocio fiduciario, asegurando el cumplimiento regulatorio y la transparencia.
+                  </p>
+                </div>
+
+                <div className="flex flex-col lg:flex-row-reverse gap-20 items-center print-avoid-break">
+                  <div className="flex-1">
+                    <div className="inline-block bg-[#E01E26] text-white font-bold px-5 py-2 rounded-full text-base mb-6 uppercase tracking-widest shadow-sm">Reto 2</div>
+                    <h3 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-[#1F2937] mb-8">Responsabilidad y Deber Fiduciario</h3>
+                    <p className="text-xl lg:text-2xl text-gray-600 mb-10 leading-relaxed">
+                      El desafío central radicó en organizar milimétricamente las tareas operativas y proteger las decisiones core que debían permanecer, sin excepción, en la Fiduciaria.
+                    </p>
+                    
+                    <div className="space-y-8">
+                      {itemsReto2.map((item, idx) => (
+                        <div key={`r2-${idx}`} className="flex gap-6 items-start group print-avoid-break">
+                          <div className="w-12 h-12 rounded-full bg-red-50 border border-red-100 text-[#E01E26] font-bold text-xl flex items-center justify-center flex-shrink-0 group-hover:bg-[#E01E26] group-hover:text-white transition-colors duration-300">
+                            {idx + 1}
+                          </div>
+                          <div>
+                            <h4 className="text-2xl lg:text-3xl font-bold text-[#1F2937] mb-2">{item.title}</h4>
+                            <p className="text-gray-600 text-lg lg:text-xl leading-relaxed">{item.desc}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="flex-1 w-full">
+                    <div className="relative rounded-[2rem] overflow-hidden shadow-2xl group border border-gray-100 bg-white">
+                      <img src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" alt="Consultoría legal y financiera" className="w-full h-auto object-cover transform group-hover:scale-105 transition duration-700" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-[#1F2937] via-[#1F2937]/60 to-transparent opacity-90"></div>
+                      <div className="absolute bottom-0 left-0 p-10 md:p-14">
+                        <div className="bg-[#E01E26] text-white text-sm font-bold px-4 py-2 rounded uppercase tracking-widest inline-block mb-4 shadow-md">Hito Operativo</div>
+                        <h3 className="text-4xl lg:text-5xl font-bold text-white mb-4">Fronteras Claras</h3>
+                        <p className="text-gray-200 text-lg lg:text-xl leading-relaxed max-w-2xl">
+                          Separación absoluta entre la labor comercial y la toma de decisiones fiduciarias para proteger los intereses de los fideicomitentes.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </section>
+          );
+        }
+
+       const Optimizacion = () => (
+          <section id="optimizacion" className="py-32 bg-white/40 backdrop-blur-sm border-t border-red-50 relative print-avoid-break">
+            <div className="max-w-[1600px] w-[95%] mx-auto px-4 sm:px-6 lg:px-8 text-center">
+              <h2 className="text-4xl md:text-6xl lg:text-7xl font-extrabold text-[#1F2937] mb-8">Optimización Clientes y Producto</h2>
+              <p className="text-2xl lg:text-3xl text-gray-600 max-w-5xl mx-auto mb-20 leading-relaxed">
+                El área de producto se centralizó de manera transversal a las 3 compañías para los mercados financieros.
+              </p>
+
+              {/* Cuadrícula equilibrada de 2x2 en pantallas grandes */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-10 lg:gap-12 relative z-10 max-w-6xl mx-auto">
+                
+                {/* Cuadro 1: Canales */}
+                <div className="bg-white p-12 rounded-3xl shadow-sm border border-gray-100 transform hover:-translate-y-2 transition duration-300 hover:border-[#E01E26] flex flex-col justify-center print-avoid-break">
+                  <h3 className="text-3xl lg:text-4xl font-bold mb-6 text-[#1F2937]">Canales</h3>
+                  <p className="text-gray-600 text-xl leading-relaxed">Integración de la experiencia digital y física bajo una sola directriz.</p>
+                </div>
+
+                {/* Cuadro 2: Área Centralizada (Rojo Corporativo) */}
+                <div className="bg-[#E01E26] text-white p-12 rounded-3xl shadow-xl transform hover:-translate-y-2 transition duration-300 z-20 flex flex-col justify-center print-avoid-break">
+                  <h3 className="text-3xl lg:text-4xl font-bold mb-6">Área Centralizada</h3>
+                  <p className="text-red-50 text-xl leading-relaxed">La eficiencia asegura que las ofertas se complementen: a quién se otorga, beneficios y asesoría.</p>
+                </div>
+
+                {/* Cuadro 3: Unificación (Actualizado: Ahora igual a Área Centralizada) */}
+                <div className="bg-[#E01E26] text-white p-12 rounded-3xl shadow-xl transform hover:-translate-y-2 transition duration-300 z-20 flex flex-col justify-center print-avoid-break">
+                  <h3 className="text-3xl lg:text-4xl font-bold mb-6">Unificación</h3>
+                  <p className="text-red-50 text-xl leading-relaxed">Garantiza políticas comunes, directrices unificadas y una alineación completa de la estrategia de gestión, distribución y administración de los productos.</p>
+                </div>
+
+                {/* Cuadro 4: Construcción */}
+                <div className="bg-white p-12 rounded-3xl shadow-sm border border-gray-100 transform hover:-translate-y-2 transition duration-300 hover:border-[#E01E26] flex flex-col justify-center print-avoid-break">
+                  <h3 className="text-3xl lg:text-4xl font-bold mb-6 text-[#1F2937]">Construcción</h3>
+                  <p className="text-gray-600 text-xl leading-relaxed">Creación de productos y mercadeo unificado para todo el ecosistema de valores.</p>
+                </div>
+
+              </div>
+
+              <div className="mt-32 max-w-6xl mx-auto bg-white p-16 lg:p-20 rounded-[3rem] shadow-xl border border-gray-100 relative print-avoid-break">
+                <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-[#E01E26] text-white px-10 py-3 rounded-full font-bold shadow-md tracking-widest uppercase text-lg">
+                  Nuestra Promesa
+                </div>
+                <h2 className="text-4xl md:text-6xl lg:text-7xl font-black text-[#1F2937] leading-tight">
+                  Siempre <span className="text-[#E01E26]">EN BUSCA DE LO MEJOR</span> para tener al Cliente en el centro.
+                </h2>
+              </div>
+            </div>
+          </section>
+        );
+        /* El reto interactivo lleva "print:hidden" para que no salga truncado en el PDF */
+        const RetoInteractivo = () => {
+          const [currentQuestion, setCurrentQuestion] = useState(0);
+          const [score, setScore] = useState(0);
+          const [showScore, setShowScore] = useState(false);
+          const [selectedAnswer, setSelectedAnswer] = useState(null);
+          const [isCorrect, setIsCorrect] = useState(null);
+
+          const questions = [
+            {
+              questionText: 'Según el Decreto 2555, ¿qué es un Contrato de Uso de Red?',
+              answerOptions: [
+                { answerText: 'Una fusión corporativa entre dos entidades financieras.', isCorrect: false },
+                { answerText: 'Un acuerdo remunerado para usar la infraestructura de otra entidad.', isCorrect: true },
+                { answerText: 'La creación de nuevas sucursales físicas compartidas.', isCorrect: false },
+                { answerText: 'Una plataforma digital exclusiva para empleados.', isCorrect: false },
+              ],
+              feedback: '¡Correcto! Es un acuerdo donde "La Red" permite a una Entidad Usuaria ofrecer productos mediante su infraestructura instalada.'
+            },
+            {
+              questionText: 'En el marco de la Relación entre Vinculados, ¿qué busca la "Vinculación Única"?',
+              answerOptions: [
+                { answerText: 'Tener múltiples asesores compitiendo por un mismo cliente.', isCorrect: false },
+                { answerText: 'Obligar al cliente a firmar contratos físicos anualmente.', isCorrect: false },
+                { answerText: 'Ofrecer un solo interlocutor dependiendo del segmento del cliente.', isCorrect: true },
+                { answerText: 'Separar a los clientes exclusivamente por su ubicación geográfica.', isCorrect: false },
+              ],
+              feedback: '¡Exacto! La vinculación única simplifica radicalmente la comunicación al asignar un solo interlocutor, brindando una mejor experiencia.'
+            },
+            {
+              questionText: 'En los Acuerdos de Colaboración (Economías de Escala), ¿cuál de las siguientes acciones NO está permitida?',
+              answerOptions: [
+                { answerText: 'Compartir sistemas de información y tecnología.', isCorrect: false },
+                { answerText: 'Delegar o tercerizar actividades propias del "core" del negocio.', isCorrect: true },
+                { answerText: 'Que la Junta Directiva apruebe y monitoree el contrato.', isCorrect: false },
+                { answerText: 'Formalizar el aprovechamiento de infraestructura instalada.', isCorrect: false },
+              ],
+              feedback: '¡Muy bien! Existe una delimitación estricta: no se puede delegar el "core" del negocio (delegación de profesionalidad).'
+            },
+            {
+              questionText: 'Según los requisitos de las Economías de Escala, ¿quién debe aprobar y monitorear estos contratos?',
+              answerOptions: [
+                { answerText: 'Únicamente el Área de Recursos Humanos.', isCorrect: false },
+                { answerText: 'El Comité Jurídico exclusivamente.', isCorrect: false },
+                { answerText: 'La Superintendencia Financiera de Colombia.', isCorrect: false },
+                { answerText: 'La Junta Directiva de las entidades contratantes.', isCorrect: true },
+              ],
+              feedback: '¡Correcto! El contrato debe constar por escrito y ser gestionado directamente por la Junta Directiva, fijando además planes de mejora.'
+            },
+            {
+              questionText: 'Durante la transformación de Corredores Davivienda, ¿hacia dónde se movieron las fuerzas corporativas?',
+              answerOptions: [
+                { answerText: 'A la Fiduciaria Davivienda.', isCorrect: false },
+                { answerText: 'Al área de mercadeo digital.', isCorrect: false },
+                { answerText: 'A la tesorería de Banco Davivienda.', isCorrect: true },
+                { answerText: 'Se independizaron del grupo.', isCorrect: false },
+              ],
+              feedback: '¡Exacto! Las fuerzas corporativas pasaron a la tesorería del Banco, logrando que Corredores se especializara en Banca Privada.'
+            },
+            {
+              questionText: 'Para superar el reto de "Arquitectura y Talento Humano", ¿qué hito físico fue fundamental?',
+              answerOptions: [
+                { answerText: 'La creación de un centro de atención telefónica (Call Center).', isCorrect: false },
+                { answerText: 'La optimización del Edificio Los Venados.', isCorrect: true },
+                { answerText: 'La construcción de una nueva sede internacional.', isCorrect: false },
+                { answerText: 'El cierre masivo de oficinas de atención física.', isCorrect: false },
+              ],
+              feedback: '¡Excelente! Se optimizó el Edificio Los Venados para que todos los comerciales estuvieran cerca, fomentando las sinergias de ideas.'
+            },
+            {
+              questionText: 'En el Reto de la Fiduciaria Davivienda, ¿cuál fue el desafío central u "Hito Operativo"?',
+              answerOptions: [
+                { answerText: 'Demarcar dónde termina la gestión comercial y dónde empieza la decisión fiduciaria.', isCorrect: true },
+                { answerText: 'Vender únicamente fondos de inversión a clientes corporativos.', isCorrect: false },
+                { answerText: 'Fusionar legalmente al Banco y a la Fiduciaria en una sola entidad.', isCorrect: false },
+                { answerText: 'Trasladar los riesgos de los portafolios al Banco Davivienda.', isCorrect: false },
+              ],
+              feedback: '¡Muy bien! Fue crucial formalizar "Fronteras Claras" operativas para proteger el deber fiduciario, el cual es indelegable.'
+            },
+            {
+              questionText: 'Gracias al uso de la red del Banco, ¿qué productos promueve principalmente la Fiduciaria en sus negocios de Fiducia de Inversión?',
+              answerOptions: [
+                { answerText: 'Tarjetas de crédito y libranzas.', isCorrect: false },
+                { answerText: 'Cuentas de ahorro y CDT.', isCorrect: false },
+                { answerText: 'Seguros de vida y pólizas vehiculares.', isCorrect: false },
+                { answerText: 'FICs y DAFUTURO.', isCorrect: true },
+              ],
+              feedback: '¡Exacto! La promoción de negocios de Fiducia de Inversión, amparada en los ANS, se centra estratégicamente en FICs y DAFUTURO.'
+            },
+            {
+              questionText: 'En cuanto a la Optimización de Clientes y Producto, ¿cuál es la principal ventaja de centralizar el área de producto?',
+              answerOptions: [
+                { answerText: 'Reducir la cantidad de productos disponibles.', isCorrect: false },
+                { answerText: 'Asegurar que las ofertas se complementen, siempre en busca de lo mejor para el cliente.', isCorrect: true },
+                { answerText: 'Permitir que las 3 compañías compitan internamente con el mismo portafolio.', isCorrect: false },
+                { answerText: 'Subsidiar los costos entre las empresas del grupo.', isCorrect: false },
+              ],
+              feedback: '¡Correcto! La eficiencia radica en alinear destinatarios, beneficios y asesoría de manera transversal para todo el ecosistema de valores.'
+            }
+          ];
+
+          const handleAnswerClick = (isCorrectAnswer, index) => {
+            setSelectedAnswer(index);
+            setIsCorrect(isCorrectAnswer);
+            
+            if (isCorrectAnswer) {
+              setScore(score + 1);
+            }
+
+            setTimeout(() => {
+              const nextQuestion = currentQuestion + 1;
+              if (nextQuestion < questions.length) {
+                setCurrentQuestion(nextQuestion);
+                setSelectedAnswer(null);
+                setIsCorrect(null);
+              } else {
+                setShowScore(true);
+              }
+            }, 4500); 
+          };
+
+          const restartQuiz = () => {
+            setCurrentQuestion(0);
+            setScore(0);
+            setShowScore(false);
+            setSelectedAnswer(null);
+            setIsCorrect(null);
+          };
+
+          return (
+            <section id="reto-interactivo" className="py-32 bg-transparent border-t border-red-50 print:hidden">
+              <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div className="text-center mb-16">
+                  <div className="inline-block px-6 py-2 rounded-full bg-red-50 text-[#E01E26] font-bold uppercase tracking-widest text-base mb-6 border border-red-100">Evaluación Interactiva</div>
+                  <h2 className="text-4xl md:text-6xl font-extrabold text-[#1F2937]">Reto de Conocimiento</h2>
+                  <p className="mt-6 text-2xl text-gray-600">Pon a prueba lo que has aprendido sobre nuestro modelo de gestión.</p>
+                </div>
+
+                <div className="bg-white rounded-[2.5rem] shadow-xl border border-gray-200 overflow-hidden">
+                  {showScore ? (
+                    <div className="p-16 lg:p-24 text-center animate-fade-in">
+                      <div className="text-8xl mb-8">🏆</div>
+                      <h3 className="text-4xl lg:text-5xl font-bold text-[#1F2937] mb-6">¡Reto Completado!</h3>
+                      <p className="text-3xl text-gray-600 mb-10">Obtuviste <span className="font-bold text-[#E01E26]">{score}</span> de {questions.length} aciertos.</p>
+                      
+                      {score === questions.length ? (
+                        <p className="text-green-600 text-xl font-bold bg-green-50 p-6 rounded-2xl mb-12">¡Excelente! Dominas a la perfección el modelo de sinergia financiera.</p>
+                      ) : (
+                        <p className="text-blue-600 text-xl font-bold bg-blue-50 p-6 rounded-2xl mb-12">¡Buen intento! Te invitamos a repasar los escenarios corporativos.</p>
+                      )}
+                      
+                      <button onClick={restartQuiz} className="bg-[#1F2937] text-white text-xl font-bold py-5 px-12 rounded-full hover:bg-gray-800 transition">
+                        Intentar de nuevo
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="flex flex-col">
+                      <div className="w-full bg-gray-100 h-3">
+                        <div 
+                          className="bg-[#E01E26] h-3 transition-all duration-500 ease-out" 
+                          style={{ width: `${((currentQuestion) / questions.length) * 100}%` }}
+                        ></div>
+                      </div>
+                      
+                      <div className="p-10 md:p-16 lg:p-20">
+                        <div className="mb-12">
+                          <span className="text-base lg:text-lg font-bold text-gray-400 uppercase tracking-widest">Pregunta {currentQuestion + 1} de {questions.length}</span>
+                          <h3 className="text-3xl md:text-4xl lg:text-5xl font-bold text-[#1F2937] mt-4 leading-tight">{questions[currentQuestion].questionText}</h3>
+                        </div>
+                        
+                        <div className="space-y-6">
+                          {questions[currentQuestion].answerOptions.map((answerOption, index) => {
+                            let btnClass = "w-full text-left p-6 lg:p-8 rounded-2xl border-[3px] transition-all duration-300 font-medium text-xl lg:text-2xl ";
+                            
+                            if (selectedAnswer === null) {
+                              btnClass += "border-gray-200 text-gray-700 hover:border-[#E01E26] hover:bg-red-50 cursor-pointer";
+                            } else if (index === selectedAnswer) {
+                              btnClass += isCorrect 
+                                ? "border-green-500 bg-green-50 text-green-700" 
+                                : "border-red-500 bg-red-50 text-red-700";
+                            } else if (answerOption.isCorrect && selectedAnswer !== null) {
+                              btnClass += "border-green-500 bg-green-50 text-green-700 opacity-50";
+                            } else {
+                              btnClass += "border-gray-200 text-gray-400 opacity-50";
+                            }
+
+                            return (
+                              <button 
+                                key={index}
+                                disabled={selectedAnswer !== null}
+                                onClick={() => handleAnswerClick(answerOption.isCorrect, index)}
+                                className={btnClass}
+                              >
+                                {answerOption.answerText}
+                              </button>
+                            );
+                          })}
+                        </div>
+
+                        {selectedAnswer !== null && (
+                          <div className={`mt-10 p-6 lg:p-8 rounded-2xl animate-fade-in ${isCorrect ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                            <p className="font-bold text-2xl mb-2">{isCorrect ? '✓ ¡Respuesta Correcta!' : '✗ Respuesta Incorrecta'}</p>
+                            <p className="text-lg lg:text-xl">{questions[currentQuestion].feedback}</p>
+                          </div>
+                        )}
+
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </section>
+          );
+        };
+
+        const Footer = () => (
+          <footer className="bg-[#E01E26] text-white py-16 lg:py-20 print-avoid-break relative z-10">
+            <div className="max-w-[1600px] w-[95%] mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-start md:items-end gap-10">
+              <div className="text-left w-full md:w-auto">
+                <h2 className="text-3xl lg:text-4xl font-black tracking-tight leading-tight">Comité Jurídico</h2>
+                <h2 className="text-3xl lg:text-4xl font-black tracking-tight leading-tight mb-6">9 de junio</h2>
+                
+                <div className="text-lg lg:text-xl font-bold leading-relaxed opacity-95">
+                  <p>Dirección Jurídica</p>
+                  <p>Corredores Davivienda</p>
+                  <p>Fiduciaria Davivienda</p>
+                </div>
+              </div>
+
+              {/* Logo en el Footer - Actualizado con fondo blanco para contraste */}
+              <div className="w-full md:w-auto border-t border-white/30 md:border-none pt-8 md:pt-0 flex justify-start md:justify-end">
+                <div className="bg-white px-6 py-4 rounded-3xl shadow-2xl inline-block transform hover:scale-105 transition duration-300">
+                  <img 
+                    src="titulo_final.png" 
+                    alt="Davivienda" 
+                    className="h-12 lg:h-16 w-auto object-contain" 
+                    onError={(e) => { e.target.onerror = null; e.target.src = 'https://via.placeholder.com/200x60/FFFFFF/E01E26?text=Davivienda'; }} 
+                  />
+                </div>
+              </div>
+            </div>
+          </footer>
+        );
+
+        const App = () => {
+          const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+          return (
+            <div className="relative font-sans text-gray-800 min-h-screen selection:bg-red-100 selection:text-[#E01E26]">
+              <BackgroundWatermark />
+              <Navbar toggleMenu={() => setIsMenuOpen(!isMenuOpen)} isMenuOpen={isMenuOpen} />
+              <Hero />
+              <RelacionVinculados />
+              <UsoDeRed />
+              <EconomiasEscala />
+              <ArquitecturaTalento />
+              <Optimizacion />
+              <RetoInteractivo />
+              <Footer />
+            </div>
+          );
+        };
+
+        // Renderizado de React en el contenedor root
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
