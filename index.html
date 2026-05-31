@@ -12,7 +12,7 @@
     
     <script crossorigin src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght=300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     
     <style>
         body { font-family: 'Inter', sans-serif; }
@@ -91,7 +91,7 @@
             <div className="max-w-[1600px] w-[95%] mx-auto px-4 sm:px-6 lg:px-8">
               <div className="flex justify-between items-center h-24 lg:h-28">
                 
-                {/* Logo representation */}
+                {/* Logo representation - Actualizado con imagen */}
                 <div className="flex-shrink-0 flex items-center gap-3">
                   <img 
                     src="titulo_final.png" 
@@ -101,11 +101,14 @@
                   />
                 </div>
                 
-                {/* Menú Desktop */}
+                {/* Menú Desktop (Oculto en celulares, visible en pantallas grandes) */}
                 <div className="hidden lg:flex items-center space-x-8 xl:space-x-12 print:hidden">
                     <a href="#relacion-vinculados" className="text-base lg:text-lg xl:text-xl font-semibold text-gray-600 hover:text-[#E01E26] transition-colors">Vinculados</a>
-                    <a href="#economias-escala" className="text-base lg:text-lg xl:text-xl font-semibold text-gray-600 hover:text-[#E01E26] transition-colors">Economías de Escala</a>
                     <a href="#uso-red" className="text-base lg:text-lg xl:text-xl font-semibold text-gray-600 hover:text-[#E01E26] transition-colors">Uso de Red</a>
+                    <a href="#economias-escala" className="text-base lg:text-lg xl:text-xl font-semibold text-gray-600 hover:text-[#E01E26] transition-colors">Escala</a>
+                    <a href="#arquitectura" className="text-base lg:text-lg xl:text-xl font-semibold text-gray-600 hover:text-[#E01E26] transition-colors">Arquitectura</a>
+                    <a href="#optimizacion" className="text-base lg:text-lg xl:text-xl font-semibold text-gray-600 hover:text-[#E01E26] transition-colors">Optimización</a>
+                    <a href="#reto-interactivo" className="text-base lg:text-lg xl:text-xl font-bold text-[#E01E26] hover:text-red-800 transition-colors">Reto</a>
                 </div>
 
                 <div className="flex lg:hidden items-center">
@@ -120,8 +123,11 @@
             {isMenuOpen && (
               <div className="absolute top-24 left-0 w-full h-screen bg-white shadow-2xl animate-fade-in flex flex-col pt-8 px-8 gap-8 text-2xl font-semibold text-gray-700 print:hidden lg:hidden">
                 <a href="#relacion-vinculados" onClick={toggleMenu} className="hover:text-[#E01E26] border-b border-gray-100 pb-4 transition-colors">1. Relación entre Vinculados</a>
-                <a href="#economias-escala" onClick={toggleMenu} className="hover:text-[#E01E26] border-b border-gray-100 pb-4 transition-colors">2. Economías de Escala</a>
-                <a href="#uso-red" onClick={toggleMenu} className="hover:text-[#E01E26] pb-4 transition-colors">3. Contrato de Uso de Red</a>
+                <a href="#uso-red" onClick={toggleMenu} className="hover:text-[#E01E26] border-b border-gray-100 pb-4 transition-colors">2. Contrato de Uso de Red</a>
+                <a href="#economias-escala" onClick={toggleMenu} className="hover:text-[#E01E26] border-b border-gray-100 pb-4 transition-colors">3. Economías de Escala</a>
+                <a href="#arquitectura" onClick={toggleMenu} className="hover:text-[#E01E26] border-b border-gray-100 pb-4 transition-colors">4. Reto: Arquitectura y Talento</a>
+                <a href="#optimizacion" onClick={toggleMenu} className="hover:text-[#E01E26] border-b border-gray-100 pb-4 transition-colors">5. Optimización Clientes y Producto</a>
+                <a href="#reto-interactivo" onClick={toggleMenu} className="hover:text-[#E01E26] pb-4 transition-colors text-[#E01E26]">6. Reto de Conocimiento</a>
               </div>
             )}
           </nav>
@@ -149,10 +155,7 @@
           </section>
         );
 
-        // --- SECCIÓN UNIFICADA: RELACIÓN VINCULADOS + ECONOMÍAS DE ESCALA ABAJO ---
         const RelacionVinculados = () => {
-          const [activeReq, setActiveReq] = useState(null);
-
           const pillars = [
             { num: "(i)", title: "Modelo de Relación", desc: "La relación se da de dos maneras fundamentales: mediante el Contrato de Uso de Red y economías de escala.", icon: <IconBuilding /> },
             { num: "(ii)", title: "Oferta Integral de Productos", desc: "Buscamos tener una oferta de productos completa y transversal para satisfacer a todos nuestros clientes.", icon: <IconShield /> },
@@ -162,27 +165,14 @@
             { num: "(vi)", title: "Un Solo Davivienda", desc: "El cliente es tratado de la mejor manera, con la rapidez de los procesos del grupo y un contacto fácil, eficaz y eficiente.", icon: <IconTrending /> }
           ];
 
-          const requisitos = [
-            { id: 1, title: "1. Límites en Actividades", desc: "No se podrán compartir actividades propias del core del negocio, evitando así la \"delegación de profesionalidad\"." },
-            { id: 2, title: "2. Retención de Responsabilidad", desc: "La entidad mantiene su responsabilidad legal; únicamente entrega la ejecución de la labor sin trasladar el deber misional." },
-            { id: 3, title: "3. Políticas de Remuneración", desc: "No es admisible bajo ninguna circunstancia que una entidad subsidie los costos de operación de otra del mismo grupo." },
-            { id: 4, title: "4. Aprobación de la Junta", desc: "El contrato debe constar por escrito y ser aprobado, monitoreado y mejorado directamente por la Junta Directiva. Sin perjuicio de las reglas adicionales que existen como conflictos de interés, criterios de materialidad y demás." },
-            { id: 5, title: "5. Gestión de Riesgos", desc: "Se exige un estricto sistema de control, análisis del impacto en el perfil de riesgos intragrupo y planes de contingencia." },
-            { id: 6, title: "6. Resolución de Controversias", desc: "Deben establecerse líneas claras para identificar fácilmente a la entidad responsable ante cualquier eventualidad." },
-            { id: 7, title: "7. Confidencialidad Absoluta", desc: "Es mandatorio adoptar medidas estrictas para garantizar la protección de la información de la entidad y, fundamentalmente, la de todos sus clientes." }
-          ];
-
           return (
             <section id="relacion-vinculados" className="py-32 bg-white/40 backdrop-blur-sm border-y border-red-50">
               <div className="max-w-[1600px] w-[95%] mx-auto px-4 sm:px-6 lg:px-8">
-                
-                {/* Título Principal */}
                 <div className="mb-20 text-center print-avoid-break">
                   <h2 className="text-4xl md:text-6xl lg:text-7xl font-extrabold text-[#1F2937] mb-6">Relación entre Vinculados</h2>
                   <p className="text-2xl lg:text-3xl text-gray-600 max-w-5xl mx-auto leading-relaxed">Propósito estratégico y beneficios de nuestra sinergia corporativa.</p>
                 </div>
 
-                {/* Cuadrícula de los 6 Pilares Recuadros */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 lg:gap-12">
                   {pillars.map((pillar, idx) => (
                     <div key={idx} className="bg-white p-10 lg:p-12 rounded-3xl shadow-sm border border-gray-100 hover:border-red-100 relative overflow-hidden group hover:shadow-xl transition-all duration-300 print-avoid-break">
@@ -196,117 +186,14 @@
                   ))}
                 </div>
 
-                {/* --- SECCIÓN INTEGRADA: ECONOMÍAS DE ESCALA ABAJO DE LOS RECUADROS --- */}
-                <div id="economias-escala" className="mt-32 pt-20 border-t border-gray-200">
-                  <div className="text-center mb-20 print-avoid-break">
-                    <h2 className="text-4xl md:text-6xl lg:text-7xl font-extrabold text-[#1F2937] mb-6">Economías de Escala</h2>
-                    <p className="text-2xl lg:text-3xl text-gray-600 max-w-5xl mx-auto leading-relaxed">
-                      Sinergia y Especialización: Transformación de fuerzas en Corredores y acuerdos de colaboración con la Fiduciaria para optimizar la atención.
-                    </p>
-                  </div>
-
-                  <div className="mb-20 print-avoid-break">
-                    <div className="bg-white border border-gray-100 rounded-[2rem] p-10 md:p-16 lg:p-20 shadow-xl relative overflow-hidden">
-                      <div className="absolute top-0 left-0 w-3 h-full bg-[#E01E26]"></div>
-                      
-                      {/* Video Player Adaptivo */}
-                      <div className="mb-16 flex justify-center w-full">
-                        <div className="w-full max-w-6xl overflow-hidden rounded-3xl shadow-md border border-gray-100 bg-black aspect-video">
-                          <video 
-                            className="w-full h-full object-contain"
-                            controls
-                            preload="auto"
-                            playsInline
-                            poster="https://via.placeholder.com/1200x680/1F2937/FFFFFF?text=Video+Economías+de+Escala"
-                          >
-                            <source src="video_economias_escala.mp4" type="video/mp4" />
-                            Tu navegador no soporta la reproducción de videos nativos.
-                          </video>
-                        </div>
-                      </div>
-
-                      {/* Requisitos y Condiciones */}
-                      <div>
-                        <h4 className="text-lg lg:text-xl font-bold text-[#E01E26] mb-8 uppercase tracking-widest text-center md:text-left">Requisitos y Condiciones</h4>
-                        
-                        {activeReq === null ? (
-                          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                            {requisitos.map((req) => (
-                              <button 
-                                key={req.id} 
-                                onClick={() => setActiveReq(req)}
-                                className="bg-gray-50 p-6 lg:p-8 rounded-2xl border border-gray-200 hover:border-[#E01E26] hover:shadow-md transition-all duration-300 text-left flex items-center gap-4 group cursor-pointer"
-                              >
-                                <span className="text-[#E01E26] text-3xl font-bold group-hover:scale-125 transition-transform duration-300">•</span>
-                                <h5 className="font-bold text-[#1F2937] text-xl">{req.title}</h5>
-                              </button>
-                            ))}
-                          </div>
-                        ) : (
-                          <div className="bg-gray-50 p-8 lg:p-12 rounded-3xl border border-gray-200 shadow-inner animate-fade-in relative print-avoid-break">
-                            <button 
-                              onClick={() => setActiveReq(null)}
-                              className="absolute top-6 right-6 lg:top-8 lg:right-8 text-gray-400 hover:text-[#E01E26] transition-colors focus:outline-none print:hidden"
-                              title="Cerrar"
-                            >
-                              <svg className="w-8 h-8 lg:w-10 lg:h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-                            </button>
-                            
-                            <div className="flex items-center justify-center gap-4 mb-6 lg:mb-8 border-b border-gray-200 pb-6 px-4 md:px-12 text-center">
-                              <span className="text-[#E01E26] text-4xl lg:text-5xl font-bold">•</span>
-                              <h5 className="font-extrabold text-[#1F2937] text-3xl lg:text-4xl leading-tight">{activeReq.title}</h5>
-                            </div>
-                            
-                            <p className="text-gray-700 text-2xl lg:text-3xl leading-relaxed max-w-5xl mx-auto text-center">
-                              {activeReq.desc}
-                            </p>
-                            
-                            <div className="mt-10 lg:mt-12 text-center print:hidden">
-                              <button 
-                                onClick={() => setActiveReq(null)}
-                                className="inline-flex items-center justify-center bg-white border-2 border-gray-300 text-gray-600 font-bold text-lg py-4 px-8 rounded-full hover:border-[#E01E26] hover:text-[#E01E26] hover:bg-red-50 transition shadow-sm transform hover:-translate-y-1"
-                              >
-                                &larr; Volver al listado
-                              </button>
-                            </div>
-                          </div>
-                        )}
-                      </div>
-
-                    </div>
-                  </div>
-                </div>
-                {/* --- FIN ECONOMÍAS DE ESCALA --- */}
-
-                {/* --- SECCIÓN: CONTRATOS ACTUALMENTE SUSCRITOS --- */}
-                <div className="pt-20 border-t border-gray-200 print-avoid-break mb-24">
-                  <div className="text-center mb-12">
-                    <h3 className="text-3xl md:text-4xl font-extrabold text-[#1F2937] mb-4">Contratos Actualmente Suscritos</h3>
-                    <p className="text-xl text-gray-600 font-medium">Mapa de acuerdos vigentes entre las entidades del grupo.</p>
-                  </div>
-                  
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 hover:border-[#E01E26] hover:shadow-md transition-all duration-300">
-                      <h4 className="font-bold text-[#1F2937] text-xl mb-2">Acuerdo Corredores Davivienda</h4>
-                      <p className="text-gray-600">Optimización transaccional y distribución eficiente de portafolios de valores.</p>
-                    </div>
-                    <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 hover:border-[#E01E26] hover:shadow-md transition-all duration-300">
-                      <h4 className="font-bold text-[#1F2937] text-xl mb-2">Colaboración Fiduciaria Davivienda</h4>
-                      <p className="text-gray-600">Estructuras integrales para la administración confiable de activos y patrimonios.</p>
-                    </div>
-                    <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 hover:border-[#E01E26] hover:shadow-md transition-all duration-300">
-                      <h4 className="font-bold text-[#1F2937] text-xl mb-2">Sinergia Seguros Bolívar</h4>
-                      <p className="text-gray-600">Redes compartidas para la protección, prevención y respaldo familiar.</p>
-                    </div>
-                  </div>
-                </div>
-
                 <div className="mt-20 flex flex-col sm:flex-row justify-center gap-8 print:hidden">
-                  <a href="#uso-red" className="inline-flex items-center justify-center bg-[#E01E26] text-white text-xl font-bold py-5 px-10 rounded-full hover:bg-red-700 transition shadow-[0_8px_20px_rgba(224,30,38,0.3)] hover:shadow-[0_12px_25px_rgba(224,30,38,0.4)] transform hover:-translate-y-1">
+                  <a href="#uso-red" className="inline-flex items-center justify-center bg-white border-2 border-[#E01E26] text-[#E01E26] text-xl font-bold py-5 px-10 rounded-full hover:bg-red-50 transition shadow-sm hover:shadow-md transform hover:-translate-y-1">
                     Ver Uso de Red &rarr;
                   </a>
+                  <a href="#economias-escala" className="inline-flex items-center justify-center bg-[#E01E26] text-white text-xl font-bold py-5 px-10 rounded-full hover:bg-red-700 transition shadow-[0_8px_20px_rgba(224,30,38,0.3)] hover:shadow-[0_12px_25px_rgba(224,30,38,0.4)] transform hover:-translate-y-1">
+                    Ver Economías de Escala &rarr;
+                  </a>
                 </div>
-
               </div>
             </section>
           );
@@ -385,14 +272,15 @@
                     <li>Otras listadas en la norma</li> 
                   </ul>
                 </div>
+                {/* Cuadro 3: Reglas Clave (Actualizado a formato de viñetas) */}
                 <div className="bg-white rounded-3xl p-10 border border-gray-100 shadow-sm hover:shadow-md transition print-avoid-break">
                   <div className="text-[#E01E26] mb-6"><IconShield /></div>
                   <h3 className="text-2xl lg:text-3xl font-bold mb-4 text-[#1F2937]">Reglas Clave</h3>
                   <ul className="text-gray-600 text-lg space-y-3 list-disc pl-6 marker:text-[#E01E26]">
-                    <li>No objeción de la SFC</li>
-                    <li>Identificación clara ante el cliente</li>
-                    <li>Capacitación obligatoria</li>
-                    <li>Listado de entidades autorizadas</li>
+                     <li>No objeción de la SFC</li>
+                     <li>Identificación clara ante el cliente</li>
+                     <li>Capacitación obligatoria</li>
+                     <li>Listado de entidades autorizadas</li>
                   </ul>
                 </div>
                 <div className="bg-[#E01E26] rounded-3xl p-10 shadow-lg hover:shadow-xl transition text-white print-avoid-break">
@@ -411,13 +299,142 @@
           </section>
         );
 
-        // --- Main App Parent Component ---
+        const EconomiasEscala = () => {
+          const [activeReq, setActiveReq] = useState(null);
+
+          const requisitos = [
+            { id: 1, title: "1. Límites en Actividades", desc: "No se podrán compartir actividades propias del core del negocio, evitando así la \"delegación de profesionalidad\"." },
+            { id: 2, title: "2. Retención de Responsabilidad", desc: "La entidad mantiene su responsabilidad legal; únicamente entrega la ejecución de la labor sin trasladar el deber misional." },
+            { id: 3, title: "3. Políticas de Remuneración", desc: "No es admisible bajo ninguna circunstancia que una entidad subsidie los costos de operación de otra del mismo grupo." },
+            { id: 4, title: "4. Aprobación de la Junta", desc: "El contrato debe constar por escrito y ser aprobado, monitoreado y mejorado directamente por la Junta Directiva. Sin perjuicio de las reglas adicionales que existen como conflictos de interés, criterios de materialidad y demás." },
+            { id: 5, title: "5. Gestión de Riesgos", desc: "Se exige un estricto sistema de control, análisis del impacto en el perfil de riesgos intragrupo y planes de contingencia." },
+            { id: 6, title: "6. Resolución de Controversias", desc: "Deben establecerse líneas claras para identificar fácilmente a la entidad responsable ante cualquier eventualidad." },
+            { id: 7, title: "7. Confidencialidad Absoluta", desc: "Es mandatorio adoptar medidas estrictas para garantizar la protección de la información de la entidad y, fundamentalmente, la de todos sus clientes." }
+          ];
+
+          return (
+            <section id="economias-escala" className="py-32 bg-white/40 backdrop-blur-sm border-t border-red-50 relative overflow-hidden">
+              <div className="max-w-[1600px] w-[95%] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                
+                <div className="text-center mb-20 print-avoid-break">
+                  <h2 className="text-4xl md:text-6xl lg:text-7xl font-extrabold text-[#1F2937] mb-6">Economías de Escala</h2>
+                  <p className="text-2xl lg:text-3xl text-gray-600 max-w-5xl mx-auto leading-relaxed">Sinergia y Especialización: Transformación de fuerzas en Corredores y acuerdos de colaboración con la Fiduciaria para optimizar la atención.</p>
+                </div>
+
+                <div className="mb-32 print-avoid-break">
+                  <div className="bg-white border border-gray-100 rounded-[2rem] p-10 md:p-16 lg:p-20 shadow-xl relative overflow-hidden">
+                    <div className="absolute top-0 left-0 w-3 h-full bg-[#E01E26]"></div>
+                    
+                    {/* SECCIÓN DEL VIDEO INTEGRADA Y CORRIENDO PERFECTAMENTE */}
+                    <div className="mb-16 flex justify-center w-full">
+                      <video 
+                        className="w-full max-w-6xl h-auto rounded-3xl shadow-sm border border-gray-100 object-cover"
+                        controls
+                        playsInline
+                        preload="metadata"
+                        poster="https://via.placeholder.com/1200x600/F9FAFB/1F2937?text=Video+Economías+de+Escala+(Haz+clic+para+reproducir)"
+                      >
+                        <source src="video_economias_escala.mp4" type="video/mp4" />
+                        Tu navegador no soporta la reproducción de videos.
+                      </video>
+                    </div>
+
+                    <div>
+                      <h4 className="text-lg lg:text-xl font-bold text-[#E01E26] mb-8 uppercase tracking-widest text-center md:text-left">Requisitos y Conditions </h4>
+                      
+                      {activeReq === null ? (
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                          {requisitos.map((req) => (
+                            <button 
+                              key={req.id} 
+                              onClick={() => setActiveReq(req)}
+                              className="bg-gray-50 p-6 lg:p-8 rounded-2xl border border-gray-200 hover:border-[#E01E26] hover:shadow-md transition-all duration-300 text-left flex items-center gap-4 group cursor-pointer"
+                            >
+                              <span className="text-[#E01E26] text-3xl font-bold group-hover:scale-125 transition-transform duration-300">•</span>
+                              <h5 className="font-bold text-[#1F2937] text-xl">{req.title}</h5>
+                            </button>
+                          ))}
+                        </div>
+                      ) : (
+                        <div className="bg-gray-50 p-8 lg:p-12 rounded-3xl border border-gray-200 shadow-inner animate-fade-in relative print-avoid-break">
+                          <button 
+                            onClick={() => setActiveReq(null)}
+                            className="absolute top-6 right-6 lg:top-8 lg:right-8 text-gray-400 hover:text-[#E01E26] transition-colors focus:outline-none print:hidden"
+                            title="Cerrar"
+                          >
+                            <svg className="w-8 h-8 lg:w-10 lg:h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                          </button>
+                          
+                          <div className="flex items-center justify-center gap-4 mb-6 lg:mb-8 border-b border-gray-200 pb-6 px-4 md:px-12 text-center">
+                            <span className="text-[#E01E26] text-4xl lg:text-5xl font-bold">•</span>
+                            <h5 className="font-extrabold text-[#1F2937] text-3xl lg:text-4xl leading-tight">{activeReq.title}</h5>
+                          </div>
+                          
+                          <p className="text-gray-700 text-2xl lg:text-3xl leading-relaxed max-w-5xl mx-auto text-center">
+                            {activeReq.desc}
+                          </p>
+                          
+                          <div className="mt-10 lg:mt-12 text-center print:hidden">
+                            <button 
+                              onClick={() => setActiveReq(null)}
+                              className="inline-flex items-center justify-center bg-white border-2 border-gray-300 text-gray-600 font-bold text-lg py-4 px-8 rounded-full hover:border-[#E01E26] hover:text-[#E01E26] hover:bg-red-50 transition shadow-sm transform hover:-translate-y-1"
+                            >
+                              &larr; Volver al listado
+                            </button>
+                          </div>
+                        </div>
+                      )}
+
+                    </div>
+                  </div>
+                </div>
+
+                {/* --- NUEVA SECCIÓN COMPLETA Y CON EL CODIGO CERRADO CORRECTAMENTE --- */}
+                <div className="pt-20 border-t border-gray-200 print-avoid-break mb-24">
+                  <div className="text-center mb-12">
+                    <h3 className="text-3xl md:text-4xl font-extrabold text-[#1F2937] mb-4">Contratos Actualmente Suscritos</h3>
+                    <p className="text-xl text-gray-600 font-medium">Mapa de acuerdos vigentes entre las entidades del grupo.</p>
+                  </div>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    {/* Contrato 1: Corredores */}
+                    <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 hover:border-[#E01E26] hover:shadow-md transition-all duration-300 relative overflow-hidden group">
+                      <div className="absolute top-0 right-0 p-4 opacity-5 text-[#E01E26] transform group-hover:scale-115 transition duration-300">
+                        <IconBuilding />
+                      </div>
+                      <h4 className="text-xl font-bold text-[#1F2937] mb-3">Davivienda Corredores</h4>
+                      <p className="text-gray-600">Acuerdo para la distribución y promoción cruzada de portafolios de inversión y valores en el mercado local.</p>
+                    </div>
+
+                    {/* Contrato 2: Fiduciaria */}
+                    <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 hover:border-[#E01E26] hover:shadow-md transition-all duration-300 relative overflow-hidden group">
+                      <div className="absolute top-0 right-0 p-4 opacity-5 text-[#E01E26] transform group-hover:scale-115 transition duration-300">
+                        <IconShield />
+                      </div>
+                      <h4 className="text-xl font-bold text-[#1F2937] mb-3">Fiduciaria Davivienda</h4>
+                      <p className="text-gray-600">Alianza estratégica inter-entidades enfocada en la gestión eficiente de carteras colectivas y patrimonios autónomos.</p>
+                    </div>
+
+                    {/* Contrato 3: Seguros */}
+                    <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 hover:border-[#E01E26] hover:shadow-md transition-all duration-300 relative overflow-hidden group">
+                      <div className="absolute top-0 right-0 p-4 opacity-5 text-[#E01E26] transform group-hover:scale-115 transition duration-300">
+                        <IconUsers />
+                      </div>
+                      <h4 className="text-xl font-bold text-[#1F2937] mb-3">Seguros Davivienda</h4>
+                      <p className="text-gray-600">Sinergia comercial integral para habilitar la colocación masiva y el recaudo unificado de pólizas familiares.</p>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </section>
+          );
+        };
+
+        // --- COMPONENTE MAIN APP QUE RENDERIZA TODO ---
         const App = () => {
           const [isMenuOpen, setIsMenuOpen] = useState(false);
-
-          const toggleMenu = () => {
-            setIsMenuOpen(!isMenuOpen);
-          };
+          const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
           return (
             <div className="relative min-h-screen">
@@ -427,15 +444,13 @@
                 <Hero />
                 <RelacionVinculados />
                 <UsoDeRed />
+                <EconomiasEscala />
               </main>
-              <footer className="bg-[#1F2937] text-white py-12 text-center text-lg print:hidden">
-                <p>&copy; 2026 Banco Davivienda S.A. Todos los derechos reservados.</p>
-              </footer>
             </div>
           );
         };
 
-        // Render the App component to the DOM
+        // Renderizado en el DOM
         const root = ReactDOM.createRoot(document.getElementById('root'));
         root.render(<App />);
     </script>
