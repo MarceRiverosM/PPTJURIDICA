@@ -414,7 +414,10 @@
         // --- Main App Parent Component ---
         const App = () => {
           const [isMenuOpen, setIsMenuOpen] = useState(false);
-          const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
+
+          const toggleMenu = () => {
+            setIsMenuOpen(!isMenuOpen);
+          };
 
           return (
             <div className="relative min-h-screen">
@@ -425,13 +428,14 @@
                 <RelacionVinculados />
                 <UsoDeRed />
               </main>
-              <footer className="bg-[#1F2937] text-white py-12 border-t border-gray-800 text-center text-lg font-medium">
-                <p>© 2026 Banco Davivienda S.A. - Dirección Corporativa de Gestión y Estrategia</p>
+              <footer className="bg-[#1F2937] text-white py-12 text-center text-lg print:hidden">
+                <p>&copy; 2026 Banco Davivienda S.A. Todos los derechos reservados.</p>
               </footer>
             </div>
           );
         };
 
+        // Render the App component to the DOM
         const root = ReactDOM.createRoot(document.getElementById('root'));
         root.render(<App />);
     </script>
