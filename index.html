@@ -167,12 +167,23 @@ HTML
             { id: 6, title: "6. Resolución de Controversias", desc: "Deben establecerse líneas claras para identificar fácilmente a la entidad responsable ante cualquier eventualidad." },
             { id: 7, title: "7. Confidencialidad Absoluta", desc: "Es mandatorio adoptar medidas estrictas para garantizar la protección de la información de la entidad y, fundamentalmente, la de todos sus clientes." }
           ];
+  const EconomiasEscala = () => {
+          const [activeReq, setActiveReq] = useState(null);
+
+          const requisitos = [
+            { id: 1, title: "1. Límites en Actividades", desc: "No se podrán compartir actividades propias del core del negocio, evitando así la \"delegación de profesionalidad\"." },
+            { id: 2, title: "2. Retención de Responsabilidad", desc: "La entidad mantiene su responsabilidad legal; únicamente entrega la ejecución de la labor sin trasladar el deber misional." },
+            { id: 3, title: "3. Políticas de Remuneración", desc: "No es admisible bajo ninguna circunstancia que una entidad subsidie los costos de operación de otra del mismo grupo." },
+            { id: 4, title: "4. Aprobación de la Junta", desc: "El contrato debe constar por escrito y ser aprobado, monitoreado y mejorado directamente por la Junta Directiva. Sin perjuicio de las reglas adicionales que existen como conflictos de interés, criterios de materialidad y demás." },
+            { id: 5, title: "5. Gestión de Riesgos", desc: "Se exige un estricto sistema de control, análisis del impacto en el perfil de riesgos intragrupo y planes de contingencia." },
+            { id: 6, title: "6. Resolución de Controversias", desc: "Deben establecerse líneas claras para identificar fácilmente a la entidad responsable ante cualquier eventualidad." },
+            { id: 7, title: "7. Confidencialidad Absoluta", desc: "Es mandatorio adoptar medidas estrictas para garantizar la protección de la información de la entidad y, fundamentalmente, la de todos sus clientes." }
+          ];
 
           return (
             <section id="economias-escala" className="py-32 bg-white/40 backdrop-blur-sm border-t border-red-50 relative overflow-hidden">
               <div className="max-w-[1600px] w-[95%] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
                 
-                {/* Título y Subtítulo de Economías de Escala */}
                 <div className="text-center mb-20 print-avoid-break">
                   <h2 className="text-4xl md:text-6xl lg:text-7xl font-extrabold text-[#1F2937] mb-6">Economías de Escala</h2>
                   <p className="text-2xl lg:text-3xl text-gray-600 max-w-5xl mx-auto leading-relaxed">Sinergia y Especialización: Transformación de fuerzas en Corredores y acuerdos de colaboración con la Fiduciaria para optimizar la atención.</p>
@@ -182,7 +193,6 @@ HTML
                   <div className="bg-white border border-gray-100 rounded-[2rem] p-10 md:p-16 lg:p-20 shadow-xl relative overflow-hidden">
                     <div className="absolute top-0 left-0 w-3 h-full bg-[#E01E26]"></div>
                     
-                    {/* El video continúa reproduciéndose perfectamente y en su misma sección */}
                     <div className="mb-16 flex justify-center w-full">
                       <video 
                         className="w-full max-w-6xl h-auto rounded-3xl shadow-sm border border-gray-100 object-cover"
@@ -195,9 +205,8 @@ HTML
                       </video>
                     </div>
 
-                    {/* Recuadros de requisitos y condiciones */}
                     <div>
-                      <h4 className="text-lg lg:text-xl font-bold text-[#E01E26] mb-8 uppercase tracking-widest text-center md:text-left">Requisitos y Condiciones</h4>
+                      <h4 className="text-lg lg:text-xl font-bold text-[#E01E26] mb-8 uppercase tracking-widest text-center md:text-left">Requisitos y Condiciones </h4>
                       
                       {activeReq === null ? (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -216,58 +225,37 @@ HTML
                         <div className="bg-gray-50 p-8 lg:p-12 rounded-3xl border border-gray-200 shadow-inner animate-fade-in relative print-avoid-break">
                           <button 
                             onClick={() => setActiveReq(null)}
-                            className="absolute top-6 right-6 text-gray-400 hover:text-[#E01E26] text-xl font-bold transition-colors"
+                            className="absolute top-6 right-6 lg:top-8 lg:right-8 text-gray-400 hover:text-[#E01E26] transition-colors focus:outline-none print:hidden"
+                            title="Cerrar"
                           >
-                            &larr; Volver a la lista
+                            <svg className="w-8 h-8 lg:w-10 lg:h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                           </button>
-                          <h5 className="font-bold text-[#1F2937] text-3xl mb-6">{activeReq.title}</h5>
-                          <p className="text-gray-600 text-xl leading-relaxed max-w-4xl">{activeReq.desc}</p>
+                          
+                          <div className="flex items-center justify-center gap-4 mb-6 lg:mb-8 border-b border-gray-200 pb-6 px-4 md:px-12 text-center">
+                            <span className="text-[#E01E26] text-4xl lg:text-5xl font-bold">•</span>
+                            <h5 className="font-extrabold text-[#1F2937] text-3xl lg:text-4xl leading-tight">{activeReq.title}</h5>
+                          </div>
+                          
+                          <p className="text-gray-700 text-2xl lg:text-3xl leading-relaxed max-w-5xl mx-auto text-center">
+                            {activeReq.desc}
+                          </p>
+                          
+                          <div className="mt-10 lg:mt-12 text-center print:hidden">
+                            <button 
+                              onClick={() => setActiveReq(null)}
+                              className="inline-flex items-center justify-center bg-white border-2 border-gray-300 text-gray-600 font-bold text-lg py-4 px-8 rounded-full hover:border-[#E01E26] hover:text-[#E01E26] hover:bg-red-50 transition shadow-sm transform hover:-translate-y-1"
+                            >
+                              &larr; Volver al listado
+                            </button>
+                          </div>
                         </div>
                       )}
-                    </div>
 
+                    </div>
                   </div>
                 </div>
-              </div>
-            </section>
-          );
-        };
-
-        const RelacionVinculados = () => {
-          const pillars = [
-            { num: "(i)", title: "Modelo de Relación", desc: "La relación se da de dos maneras fundamentales: mediante el Contrato de Uso de Red y economías de escala.", icon: <IconBuilding /> },
-            { num: "(ii)", title: "Oferta Integral de Productos", desc: "Buscamos tener una oferta de productos completa y transversal para satisfacer a todos nuestros clientes.", icon: <IconShield /> },
-            { num: "(iii)", title: "Comerciales Unificados", desc: "Implica que los equipos comerciales de todas las compañías hermanas pueden distribuir los productos de todo el grupo.", icon: <IconUsers /> },
-            { num: "(iv)", title: "Vinculación Única", desc: "Ofrecemos un solo interlocutor dependiendo del segmento del cliente, simplificando radicalmente la comunicación.", icon: <IconKey /> },
-            { num: "(v)", title: "Eficiencias Intercompany", desc: "Generamos sinergias profundas que nos permiten optimizar gastos, unificar procesos y estandarizar procedimientos.", icon: <IconCog /> },
-            { num: "(vi)", title: "Un Solo Davivienda", desc: "El cliente es tratado de la mejor manera, con la rapidez de los procesos del grupo y un contacto fácil, eficaz y eficiente.", icon: <IconTrending /> }
-          ];
-
-          return (
-            <section id="relacion-vinculados" className="py-32 bg-white/40 backdrop-blur-sm border-y border-red-50">
-              <div className="max-w-[1600px] w-[95%] mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="mb-20 text-center print-avoid-break">
-                  <h2 className="text-4xl md:text-6xl lg:text-7xl font-extrabold text-[#1F2937] mb-6">Relación entre Vinculados</h2>
-                  <p className="text-2xl lg:text-3xl text-gray-600 max-w-5xl mx-auto leading-relaxed">Propósito estratégico y beneficios de nuestra sinergia corporativa.</p>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 lg:gap-12">
-                  {pillars.map((pillar, idx) => (
-                    <div key={idx} className="bg-white p-10 lg:p-12 rounded-3xl shadow-sm border border-gray-100 hover:border-red-100 relative overflow-hidden group hover:shadow-xl transition-all duration-300 print-avoid-break">
-                      <div className="absolute top-0 right-0 p-6 opacity-5 text-[#E01E26] transform group-hover:scale-125 transition duration-500">
-                        {pillar.icon}
-                      </div>
-                      <div className="text-[#E01E26] font-bold text-2xl mb-4">{pillar.num}</div>
-                      <h4 className="text-2xl lg:text-3xl font-bold mb-6 text-[#1F2937] relative z-10">{pillar.title}</h4>
-                      <p className="text-gray-600 text-lg lg:text-xl relative z-10 leading-relaxed">{pillar.desc}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </section>
-          );
-        };
-
+          
+     
         const UsoDeRed = () => (
           <section id="uso-red" className="py-32 bg-transparent">
             <div className="max-w-[1600px] w-[95%] mx-auto px-4 sm:px-6 lg:px-8">
