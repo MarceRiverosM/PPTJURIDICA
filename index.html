@@ -155,7 +155,7 @@
             { num: "(i)", title: "Modelo de Relación", desc: " Soporte contractual y normativo para reglamentar la relación entre las compañias, bajo un modelo de economias de escala.", icon: <IconBuilding /> },
             { num: "(ii)", title: "Oferta Integral de Productos", desc: "Oferta de productos completa y transversal para satisfacer las necesidades de todos nuestros clientes.", icon: <IconShield /> },
             { num: "(iii)", title: "Comerciales y estructucturadores Unificados", desc: "Equipos comerciales unificados distribuyendo una oferta integral de productos.", icon: <IconUsers /> },
-            { num: "(iv)", title: "Interlocutor Único", desc: "Un solo interlocutor dependiendo del segmento del cliente, simplificando radicalmente la comunicación.", icon: <IconKey /> },
+            { num: "(iv)", title: "Interlocutor Única", desc: "Un solo interlocutor dependiendo del segmento del cliente, simplificando radicalmente la comunicación.", icon: <IconKey /> },
             { num: "(v)", title: "Eficiencias Intercompany", desc: "Sinergias profundas que nos permitan optimizar gastos, unificar procesos y estandarizar procedimientos a traves de equipos transversales.", icon: <IconCog /> },
             { num: "(vi)", title: "Percepción del cliente: Un Solo Davivienda", desc: "El cliente es tratado de la mejor manera, con la rapidez de los procesos del grupo y un contacto fácil, eficaz y eficiente.", icon: <IconTrending /> }
           ];
@@ -261,6 +261,41 @@
                       </div>
                     </div>
                   </div>
+
+                  <div className="mb-10 flex justify-center w-full mt-16 print-avoid-break">
+                    <div className="relative inline-block w-full max-w-6xl">
+                      <img 
+                        src="flujo-fiduciaria2.png" 
+                        alt="Contrato de Colaboración Banco y Fiduciaria" 
+                        className="w-full h-auto rounded-3xl shadow-lg border border-gray-100 object-contain"
+                        onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = 'https://via.placeholder.com/1200x500/F9FAFB/1F2937?text=Aseg%C3%BArate+de+enlazar+tu+imagen+flujo-fiduciaria.png+aqui'; }}
+                      />
+                      
+                      <div className="absolute bottom-4 right-4 md:bottom-10 md:right-6 z-20 group print:hidden">
+                        
+                        <div className="absolute bottom-full right-0 mb-2 w-48 md:w-56 lg:w-64 bg-white rounded-2xl shadow-2xl border border-gray-100 p-6 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform translate-y-4 group-hover:translate-y-0 pointer-events-none">
+                          <div className="flex items-start gap-2">
+                            <div className="bg-red-50 text-[#E01E26] p-1.5 rounded-xl flex-shrink-0 relative">
+                              <svg className="w-5 h-5 lg:w-6 lg:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+                              <span className="absolute top-[55%] left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-[5px] lg:text-[16px] font-extrabold tracking-wider">SFC</span>
+                            </div>
+                            <div>
+                              <h4 className="font-bold text-[#1F2937] text-lg lg:text-xl leading-tight mb-1">Modelo Tipo Aprobado por la SFC</h4>
+                              <p className="text-gray-600 text-[10px] lg:text-base leading-relaxed">Uso de estructuras contractuales estándar que cumplen con la normativa de la Superintendencia Financiera para una contratación ágil.</p>
+                            </div>
+                          </div>
+                        </div>
+                        
+                        <button className="flex items-center justify-center w-14 h-14 lg:w-16 lg:h-16 bg-white/90 backdrop-blur-sm border-2 border-[#E01E26] text-[#E01E26] rounded-full shadow-lg hover:bg-[#E01E26] hover:text-white transition-colors duration-300 relative cursor-help">
+                          <span className="absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-30 animate-ping"></span>
+                          <svg className="w-8 h-8 lg:w-10 lg:h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        </button>
+                        
+                      </div>
+
+                    </div>
+                  </div>
+
                 </div>
 
               </div>
@@ -414,7 +449,6 @@
                 </div>
 
                 <div className="text-center mb-16 print-avoid-break">
-                  <div className="inline-block px-6 py-2 rounded-full bg-red-50 text-[#E01E26] font-bold uppercase tracking-widest text-base mb-6 border border-red-100">Escenario 1</div>
                   <h3 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-[#1F2937] mb-4">Corredores Davivienda</h3>
                   <p className="text-2xl lg:text-3xl text-gray-600 font-medium">Transformación y Especialización de Fuerzas Comerciales</p>
                 </div>
@@ -477,46 +511,6 @@
                         <span className="block font-bold text-[#E01E26] text-3xl mb-2">✓</span>
                         <span className="text-sm lg:text-base text-gray-600 uppercase tracking-widest font-bold">Op. Mayores</span>
                       </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="pt-24 border-t border-gray-200 print-avoid-break">
-                  <div className="text-center mb-16">
-                    <div className="inline-block px-6 py-2 rounded-full bg-red-50 text-[#E01E26] font-bold uppercase tracking-widest text-base mb-6 border border-red-100">Escenario 2</div>
-                  </div>
-
-                  <div className="mb-16 flex justify-center w-full px-4">
-                    <div className="relative inline-block w-full max-w-6xl">
-                      <img 
-                        src="flujo-fiduciaria2.png" 
-                        alt="Contrato de Colaboración Banco y Fiduciaria" 
-                        className="w-full h-auto rounded-3xl shadow-lg border border-gray-100 object-contain"
-                        onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = 'https://via.placeholder.com/1200x500/F9FAFB/1F2937?text=Aseg%C3%BArate+de+enlazar+tu+imagen+flujo-fiduciaria.png+aqui'; }}
-                      />
-                      
-                      <div className="absolute bottom-4 right-4 md:bottom-10 md:right-6 z-20 group print:hidden">
-                        
-                        <div className="absolute bottom-full right-0 mb-2 w-48 md:w-56 lg:w-64 bg-white rounded-2xl shadow-2xl border border-gray-100 p-6 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform translate-y-4 group-hover:translate-y-0 pointer-events-none">
-                          <div className="flex items-start gap-2">
-                            <div className="bg-red-50 text-[#E01E26] p-1.5 rounded-xl flex-shrink-0 relative">
-                              <svg className="w-5 h-5 lg:w-6 lg:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
-                              <span className="absolute top-[55%] left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-[5px] lg:text-[16px] font-extrabold tracking-wider">SFC</span>
-                            </div>
-                            <div>
-                              <h4 className="font-bold text-[#1F2937] text-lg lg:text-xl leading-tight mb-1">Modelo Tipo Aprobado por la SFC</h4>
-                              <p className="text-gray-600 text-[10px] lg:text-base leading-relaxed">Uso de estructuras contractuales estándar que cumplen con la normativa de la Superintendencia Financiera para una contratación ágil.</p>
-                            </div>
-                          </div>
-                        </div>
-                        
-                        <button className="flex items-center justify-center w-14 h-14 lg:w-16 lg:h-16 bg-white/90 backdrop-blur-sm border-2 border-[#E01E26] text-[#E01E26] rounded-full shadow-lg hover:bg-[#E01E26] hover:text-white transition-colors duration-300 relative cursor-help">
-                          <span className="absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-30 animate-ping"></span>
-                          <svg className="w-8 h-8 lg:w-10 lg:h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                        </button>
-                        
-                      </div>
-
                     </div>
                   </div>
                 </div>
