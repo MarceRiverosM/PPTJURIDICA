@@ -158,7 +158,7 @@
           const [activeReq, setActiveReq] = useState(null);
 
           const pillars = [
-            { num: "(i)", title: "Modelo de Relación", desc: " Soporte contractual y normativo para reglamentar la relación entre las compañías, bajo un modelo de economías de escala.", icon: <IconBuilding /> },
+            { num: "(i)", title: "Modelo de Relación", desc: "Soporte contractual y normativo para reglamentar la relación entre las compañías, bajo un modelo de economías de escala.", icon: <IconBuilding /> },
             { num: "(ii)", title: "Oferta Integral de Productos", desc: "Oferta de productos completa y transversal para satisfacer las necesidades de todos nuestros clientes.", icon: <IconShield /> },
             { num: "(iii)", title: "Comerciales y estructuradores Unificados", desc: "Equipos comerciales unificados distribuyendo una oferta integral de productos.", icon: <IconUsers /> },
             { num: "(iv)", title: "Interlocutor Único", desc: "Un solo interlocutor dependiendo del segmento del cliente, simplificando radicalmente la comunicación.", icon: <IconKey /> },
@@ -180,4 +180,45 @@
             <section id="relacion-vinculados" className="py-32 bg-white/40 backdrop-blur-sm border-y border-red-50">
               <div className="max-w-[1600px] w-[95%] mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="mb-20 text-center print-avoid-break">
-                  <h
+                    <h2 className="text-4xl lg:text-5xl font-extrabold text-gray-900 mb-4">Relación entre Vinculados</h2>
+                    <p className="text-xl text-gray-600 max-w-3xl mx-auto">Pilares fundamentales estructurales y normativos de la integración empresarial.</p>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    {pillars.map((pillar, idx) => (
+                        <div key={idx} className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition">
+                            <div className="text-[#E01E26] mb-4">{pillar.icon}</div>
+                            <span className="text-sm font-bold text-[#E01E26]/60 uppercase">{pillar.num}</span>
+                            <h3 className="text-xl font-bold text-gray-900 mt-1 mb-3">{pillar.title}</h3>
+                            <p className="text-gray-600 leading-relaxed">{pillar.desc}</p>
+                        </div>
+                    ))}
+                </div>
+              </div>
+            </section>
+          );
+        };
+
+        // --- Main App Component ---
+        const App = () => {
+          const [isMenuOpen, setIsMenuOpen] = useState(false);
+          const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
+
+          return (
+            <div className="relative">
+              <BackgroundWatermark />
+              <Navbar toggleMenu={toggleMenu} isMenuOpen={isMenuOpen} />
+              <main>
+                <Hero />
+                <RelacionVinculados />
+              </main>
+            </div>
+          );
+        };
+
+        // --- Render implementation ---
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
